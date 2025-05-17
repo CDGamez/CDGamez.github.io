@@ -1,4 +1,4 @@
-name: Deploy Vite to GitHub Pages
+name: Deploy Vite + Svelte
 
 on:
   push:
@@ -12,10 +12,10 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build the site
+      - name: Build site
         run: npm run build
 
       - name: Deploy to GitHub Pages
