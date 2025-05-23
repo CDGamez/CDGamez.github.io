@@ -1,1 +1,0 @@
-import{r as l,c as o,a as t,w as n,t as r,v as u,F as i,o as m}from"./index-Bzu9kuOV.js";const _={__name:"home",setup(p){const e=l("This is the Home Page!");return(c,a)=>(m(),o(i,null,[t("h1",null,r(e.value),1),n(t("input",{"onUpdate:modelValue":a[0]||(a[0]=s=>e.value=s)},null,512),[[u,e.value]])],64))}};export{_ as default};
