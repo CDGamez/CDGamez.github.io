@@ -1,1 +1,0 @@
-import{r as l,c as n,a,w as o,t as r,v as u,F as i,o as p}from"./index-CCH-a1x7.js";const _={__name:"test",setup(c){const e=l("This is the Test Page!");return(m,t)=>(p(),n(i,null,[a("h1",null,r(e.value),1),o(a("input",{"onUpdate:modelValue":t[0]||(t[0]=s=>e.value=s)},null,512),[[u,e.value]])],64))}};export{_ as default};
