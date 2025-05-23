@@ -3,10 +3,6 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-<nav>
- <RouterLink to="/">Home</RouterLink>
- <RouterLink to="/test">Test</RouterLink>
-</nav>
   <div>
     <a href="https://vite.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
@@ -17,6 +13,8 @@ import HelloWorld from './components/HelloWorld.vue'
   </div>
   <HelloWorld msg="Vite + Vue" />
   <div id="vue-router">
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/test">Test</RouterLink>
     <RouterView />
   </div>
 </template>
