@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,5 +29,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -B static
           git add routes.json
-          git commit -m "Auto-generate routes.json"
+          git diff --quiet && echo "No changes to commit" || git commit -m "Auto-generate routes.json"
           git push origin static --force
