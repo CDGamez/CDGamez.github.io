@@ -1,11 +1,9 @@
 name: Generate Static Routes
 
-# Trigger on pushes to main
 on:
   push:
     branches: [ main ]
 
-# Grant push permission to GITHUB_TOKEN
 permissions:
   contents: write
 
@@ -17,8 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0           # ensure full history for branch ops
-          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -26,20 +23,17 @@ jobs:
           node-version: '18'
 
       - name: Generate routes.json
-        working-directory: CDGamez
         run: node generateRoutesManifest.js
 
       - name: Commit and push to static branch
-        working-directory: CDGamez
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -B static
           git add routes.json
-          # Only commit if there are changes
           if ! git diff --cached --quiet; then
             git commit -m "Auto-generate routes.json"
           else
-            echo "No changes to routes.json—skipping commit"
+            echo "No changes to commit."
           fi
           git push origin static --force
