@@ -21,10 +21,13 @@ jobs:
           node-version: '18'
 
       - name: Generate routes.json
-        run: node generateRoutesManifest.js
+        run: |
+          cd CDGamez
+          node generateRoutesManifest.js
 
       - name: Commit and push to static branch
         run: |
+          cd CDGamez
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -B static
