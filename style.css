@@ -1,0 +1,214 @@
+/* style.css */
+
+/* Global Body Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Console Container */
+.console-container {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Top Bar Styles */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 0.75rem 0.75rem 0 0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-indicators {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.battery-status {
+    display: flex;
+    align-items: center;
+    color: #4a5568;
+    font-size: 1.125rem;
+}
+
+.battery-percentage {
+    margin-left: 0.25rem;
+    font-size: 0.875rem;
+}
+
+/* Game Icons Wrapper and Scroll Container */
+.game-icons-wrapper {
+    flex-grow: 1;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+.game-icons-scroll-container {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Game Icon Placeholder */
+.game-icon-placeholder {
+    background-color: #000;
+    color: #fff;
+    width: 160px;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.game-icon-placeholder:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation Buttons Section */
+.nav-buttons-section {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    background-color: #fff;
+    border-radius: 0 0 0.75rem 0.75rem;
+    box-shadow: 0 -1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+}
+
+/* Navigation Button */
+.nav-button {
+    width: 70px;
+    height: 70px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    border: 2px solid #ccc;
+    border: none; /* Override default button border */
+    padding: 0;
+}
+.nav-button:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+}
+.nav-button i {
+    color: #666;
+    font-size: 1.8rem;
+}
+
+/* Bottom Bar Styles */
+.bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+}
+
+.device-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.action-buttons span {
+    display: flex;
+    align-items: center;
+}
+
+/* Responsive Adjustments (Media Queries) */
+@media (max-width: 768px) {
+    .game-icons-scroll-container {
+        justify-content: flex-start;
+    }
+    .game-icon-placeholder {
+        width: 140px;
+        height: 210px;
+        font-size: 1rem;
+    }
+    .nav-button {
+        width: 60px;
+        height: 60px;
+    }
+    .nav-button i {
+        font-size: 1.5rem;
+    }
+    .console-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-icon-placeholder {
+        width: 120px;
+        height: 180px;
+        font-size: 0.9rem;
+        margin: 0 8px;
+    }
+    .nav-button {
+        width: 50px;
+        height: 50px;
+    }
+    .nav-button i {
+        font-size: 1.3rem;
+    }
+    .console-container {
+        padding: 10px;
+    }
+    .top-bar .text-xl {
+        font-size: 1.25rem;
+    }
+    .top-bar .text-lg {
+        font-size: 1rem;
+    }
+}
