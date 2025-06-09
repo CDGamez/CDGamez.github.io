@@ -11,30 +11,6 @@
         src="https://on-sawfly-40.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
         type="text/javascript"
     ></script>
-
-    <script>
-        window.addEventListener('load', async function () {
-            await Clerk.load()
-
-        if (Clerk.user) {
-      document.getElementById('app').innerHTML = `
-        <div id="user-button"></div>
-      `
-
-      const userButtonDiv = document.getElementById('user-button')
-
-      Clerk.mountUserButton(userButtonDiv)
-    } else {
-      document.getElementById('app').innerHTML = `
-        <div id="sign-in"></div>
-      `
-
-      const signInDiv = document.getElementById('sign-in')
-
-      Clerk.mountSignIn(signInDiv)
-    }
-  })
-</script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -44,6 +20,7 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body class="bg-gray-200">
+    <div id="app">
     <div id="blackoutOverlay" class="blackout-overlay"></div>
     <div class="console-container">
         <header class="top-bar">
@@ -114,5 +91,29 @@
     </div>
     <script src="./script.js" defer></script>
     <script src="./iframe-manager.js" defer></script>
+    <script>
+        window.addEventListener('load', async function () {
+            await Clerk.load()
+
+        if (Clerk.user) {
+      document.getElementById('app').innerHTML = `
+        <div id="user-button"></div>
+      `
+
+      const userButtonDiv = document.getElementById('user-button')
+
+      Clerk.mountUserButton(userButtonDiv)
+    } else {
+      document.getElementById('app').innerHTML = `
+        <div id="sign-in"></div>
+      `
+
+      const signInDiv = document.getElementById('sign-in')
+
+      Clerk.mountSignIn(signInDiv)
+    }
+  })
+</script>
+</div>
 </body>
 </html>
