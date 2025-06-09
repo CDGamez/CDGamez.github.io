@@ -4,23 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nintendo Switch Settings</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Inter font for better readability */
+        /* Import Inter font for a modern look */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        /* CSS Variables for theming */
-        /* Light Mode Defaults (when html does NOT have .dark-mode class) */
+        /* --- CSS Variables for Theming --- */
+        /* Default Light Mode variables */
         :root {
-            --bg-color-main: #e0e0e0;
+            --bg-color-main: #f0f0f0;
             --console-bg: #bbb;
             --screen-bg: #f8f8f8;
             --header-bg: #e5e5e5;
             --text-color: #333;
             --menu-bg: #ffffff;
             --menu-hover-bg: #f0f0f0;
-            --selected-bg: #4a90e2; /* Lighter Blue for Light Mode */
+            --selected-bg: #4a90e2; /* Lighter Blue */
             --selected-text: white;
             --border-color: #ccc;
             --button-bg: #4a90e2;
@@ -33,12 +32,13 @@
             --input-bg: #ffffff;
             --input-border: #ccc;
             --input-text: #333;
+            --dialog-border: #aaa;
         }
 
-        /* Dark Mode Overrides (when html HAS .dark-mode class) */
+        /* Dark Mode overrides applied when html has the .dark-mode class */
         html.dark-mode {
-            --bg-color-main: #f0f0f0; /* Darker gray */
-            --console-bg: #333; /* Darker */
+            --bg-color-main: #222;
+            --console-bg: #111;
             --screen-bg: #1a1a1a;
             --header-bg: #2c2c2c;
             --text-color: #ccc;
@@ -57,8 +57,10 @@
             --input-bg: #3a3a3a;
             --input-border: #555;
             --input-text: #eee;
+            --dialog-border: #666;
         }
 
+        /* Base body styling */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color-main);
@@ -67,30 +69,31 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Prevent scroll bars for the console */
+            overflow: hidden; /* Prevents unwanted body scroll */
             transition: background-color 0.3s ease;
         }
 
+        /* Switch Console Container */
         .switch-console {
             background-color: var(--console-bg);
             border-radius: 40px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             position: relative;
-            padding: clamp(15px, 3vw, 30px); /* Increased padding for larger size */
+            padding: min(15px, 3vw); /* Responsive padding */
             box-sizing: border-box;
             transition: background-color 0.3s ease;
-            width: 1000px; /* Made bigger */
-            max-width: 95vw;
-            height: auto;
-            aspect-ratio: 16 / 9;
-            min-height: 500px; /* Made bigger */
+
+            /* Responsive sizing: min-width 320px, max-width 1200px, scales with 90% of viewport width */
+            width: clamp(320px, 90vw, 1200px);
+            aspect-ratio: 16 / 9; /* Maintains 16:9 aspect ratio */
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Ensures content respects rounded corners */
         }
 
+        /* Switch Screen (inner display) */
         .switch-screen {
-            flex-grow: 1;
+            flex-grow: 1; /* Allows screen to fill available space */
             background-color: var(--screen-bg);
             border-radius: 10px;
             overflow: hidden;
@@ -98,31 +101,35 @@
             flex-direction: column;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
             transition: background-color 0.3s ease;
+            min-height: 250px; /* Prevents collapse on very small heights */
         }
 
+        /* Screen Header */
         .screen-header {
             background-color: var(--header-bg);
             color: var(--text-color);
-            padding: 1rem;
-            font-size: 1.2rem;
+            padding: clamp(0.75rem, 2vw, 1.2rem); /* Responsive padding */
+            font-size: clamp(1rem, 2.5vw, 1.2rem); /* Responsive font size */
             font-weight: 600;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
+        /* Main Settings Content Area (Menu + Detail) */
         .settings-content {
             display: flex;
             flex-grow: 1;
-            overflow: hidden;
+            overflow: hidden; /* Ensures contained scrolling */
         }
 
+        /* Settings Menu (left sidebar) */
         .settings-menu {
-            width: 35%;
+            width: 35%; /* Menu takes 35% of the screen width */
             background-color: var(--menu-bg);
             color: var(--text-color);
-            padding: 1rem 0;
-            overflow-y: auto;
+            padding: clamp(0.5rem, 1vw, 1rem) 0; /* Responsive padding */
+            overflow-y: auto; /* Allows menu to scroll if content overflows */
             border-right: 1px solid var(--border-color);
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
@@ -134,12 +141,13 @@
         }
 
         .settings-menu li {
-            padding: 0.8rem 1.5rem;
+            padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(1rem, 2vw, 1.5rem); /* Responsive padding */
             cursor: pointer;
             transition: background-color 0.2s ease, color 0.2s ease;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: clamp(0.8rem, 2vw, 1rem); /* Responsive font size */
             color: var(--text-color);
         }
 
@@ -165,18 +173,26 @@
             border-bottom-right-radius: 3px;
         }
 
+        /* Setting Detail Panel (right content area) */
         .setting-detail {
-            flex-grow: 1;
+            flex-grow: 1; /* Detail panel takes remaining space */
             background-color: var(--screen-bg);
             color: var(--text-color);
-            padding: 1.5rem;
-            overflow-y: auto;
+            padding: clamp(1rem, 2vw, 1.5rem); /* Responsive padding */
+            overflow-y: auto; /* Allows detail content to scroll */
             transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: clamp(0.85rem, 1.8vw, 1rem); /* Responsive font size for paragraphs */
+        }
+
+        .setting-detail h2 {
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem); /* Responsive H2 size */
+            margin-bottom: clamp(0.8rem, 1.5vw, 1rem); /* Responsive margin */
         }
 
         /* Generic button styling for dynamic content */
         .setting-detail button {
-            padding: 0.6rem 1.2rem;
+            padding: clamp(0.5rem, 1.2vw, 0.6rem) clamp(1rem, 2vw, 1.2rem); /* Responsive padding */
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem); /* Responsive font size */
             background-color: var(--button-bg);
             color: var(--selected-text);
             border-radius: 0.5rem;
@@ -198,11 +214,12 @@
             background-color: var(--input-bg);
             border: 1px solid var(--input-border);
             color: var(--input-text);
-            padding: 0.5rem 0.75rem;
+            padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.6rem, 1.2vw, 0.75rem); /* Responsive padding */
             border-radius: 0.25rem;
             margin-top: 0.5rem;
             width: 100%;
             box-sizing: border-box;
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem); /* Responsive font size */
         }
 
         .setting-detail input[type="text"]:focus,
@@ -213,8 +230,8 @@
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
 
-        /* Confirmation Modal Styling */
-        .modal-overlay {
+        /* Confirmation Dialog Styling */
+        .dialog-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -229,70 +246,71 @@
             -webkit-backdrop-filter: blur(5px);
         }
 
-        .modal-content {
+        .dialog-content {
             background-color: var(--modal-bg);
             color: var(--modal-text);
-            padding: 2rem;
+            padding: clamp(1.5rem, 3vw, 2rem); /* Responsive padding */
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             text-align: center;
             max-width: 400px;
             width: 90%;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            border: 1px solid var(--dialog-border);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
-        .modal-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+        .dialog-content h3 {
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            margin-bottom: clamp(0.8rem, 1.5vw, 1rem);
             color: var(--modal-text);
         }
 
-        .modal-content p {
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
+        .dialog-content p {
+            margin-bottom: clamp(1rem, 2vw, 1.5rem);
+            font-size: clamp(0.9rem, 1.8vw, 1rem);
         }
 
-        .modal-actions {
+        .dialog-actions {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: clamp(10px, 2vw, 15px);
         }
 
-        .modal-actions button {
-            padding: 0.75rem 1.5rem;
+        .dialog-actions button {
+            padding: clamp(0.6rem, 1.2vw, 0.75rem) clamp(1.2rem, 2.5vw, 1.5rem);
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
             cursor: pointer;
             border: none;
             transition: background-color 0.2s ease, transform 0.1s ease;
         }
 
-        .modal-actions .confirm-btn {
-            background-color: #dc3545;
+        .dialog-actions .confirm-btn {
+            background-color: #dc3545; /* Red for destructive action */
             color: white;
         }
 
-        .modal-actions .confirm-btn:hover {
+        .dialog-actions .confirm-btn:hover {
             background-color: #c82333;
         }
 
-        .modal-actions .cancel-btn {
+        .dialog-actions .cancel-btn {
             background-color: var(--modal-button-bg);
             color: var(--selected-text);
         }
 
-        .modal-actions .cancel-btn:hover {
+        .dialog-actions .cancel-btn:hover {
             background-color: var(--modal-button-hover-bg);
         }
 
         /* Temporary Notification Message */
         .notification-message {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: clamp(10px, 3vw, 20px); /* Responsive position */
+            right: clamp(10px, 3vw, 20px); /* Responsive position */
             background-color: var(--menu-bg);
             color: var(--notification-text);
-            padding: 15px 25px;
+            padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 25px); /* Responsive padding */
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             z-index: 1001;
@@ -308,37 +326,6 @@
             10% { opacity: 1; transform: translateY(0); }
             90% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-20px); }
-        }
-
-        /* Responsive adjustments for smaller screens */
-        @media (max-width: 768px) {
-            .switch-console {
-                padding: clamp(5px, 1vw, 10px);
-                border-radius: 20px;
-                min-height: auto;
-            }
-
-            .switch-screen {
-                min-height: 250px;
-                flex-grow: 1;
-            }
-
-            .settings-content {
-                flex-direction: column;
-            }
-
-            .settings-menu {
-                width: 100%;
-                max-height: 30vh;
-                min-height: 120px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            .setting-detail {
-                height: auto;
-                flex-grow: 1;
-            }
         }
     </style>
 </head>
@@ -368,7 +355,6 @@
                     </ul>
                 </div>
                 <div class="setting-detail" id="settingDetail">
-                    <!-- Dynamic content will be loaded here -->
                     <h2 class="text-xl font-semibold mb-4">System Settings</h2>
                     <p>Information about the console system, including firmware version, serial number, and language settings.</p>
                     <div class="mt-4 text-sm text-gray-400">
@@ -381,19 +367,17 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal for Reset Console -->
-    <div id="resetConfirmModal" class="modal-overlay hidden">
-        <div class="modal-content">
+    <div id="resetConfirmDialog" class="dialog-overlay hidden">
+        <div class="dialog-content">
             <h3>Confirm Reset</h3>
             <p>Are you sure you want to reset the console? This will clear all saved data, including local storage and cache. This action cannot be undone.</p>
-            <div class="modal-actions">
+            <div class="dialog-actions">
                 <button id="confirmResetBtn" class="confirm-btn">Yes, Reset</button>
                 <button id="cancelResetBtn" class="cancel-btn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Global Notification Message Display -->
     <div id="globalNotification" class="notification-message hidden"></div>
 
     <script>
@@ -401,21 +385,18 @@
         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
         /**
-         * Applies the specified theme to the document.
-         * This function adds or removes the 'dark-mode' class from the <html> element
-         * and stores the user's preference in localStorage for persistence across sessions.
+         * Applies the specified theme to the document's <html> element.
+         * Stores the user's preference in localStorage for persistence.
          * @param {string} theme - The theme to apply: 'light' or 'dark'.
          */
         function applyTheme(theme) {
-            const htmlElement = document.documentElement; // Refers to the root <html> tag of the document
+            const htmlElement = document.documentElement;
 
             if (theme === 'dark') {
-                htmlElement.classList.add('dark-mode'); // Add 'dark-mode' class for dark theme
+                htmlElement.classList.add('dark-mode');
             } else {
-                htmlElement.classList.remove('dark-mode'); // Remove 'dark-mode' class for light theme
+                htmlElement.classList.remove('dark-mode');
             }
-
-            // Save the user's explicit theme preference to browser's local storage.
             localStorage.setItem('themePreference', theme);
         }
 
@@ -423,48 +404,57 @@
             const settingsMenu = document.getElementById('settingsMenu');
             const settingDetail = document.getElementById('settingDetail');
             const screenHeader = document.getElementById('screenHeader');
-            const htmlElement = document.documentElement; // Reference the html element
-            const resetConfirmModal = document.getElementById('resetConfirmModal');
+            const htmlElement = document.documentElement;
+            const resetConfirmDialog = document.getElementById('resetConfirmDialog');
             const confirmResetBtn = document.getElementById('confirmResetBtn');
             const cancelResetBtn = document.getElementById('cancelResetBtn');
             const globalNotification = document.getElementById('globalNotification');
 
             let selectedMenuItem = settingsMenu.querySelector('.selected');
 
-            // --- Theme Application on Load ---
+            // --- Initial Theme Application on Load ---
             const storedTheme = localStorage.getItem('themePreference');
             if (storedTheme) {
                 applyTheme(storedTheme);
             } else if (prefersDarkScheme.matches) {
-                applyTheme('dark');
+                applyTheme('dark'); // Apply dark if system prefers it and no local preference
             } else {
-                applyTheme('light');
+                applyTheme('light'); // Default to light if no preference and system doesn't prefer dark
             }
 
             // Listen for changes in the user's operating system's color scheme preference.
+            // This ensures the theme updates if the OS setting changes while the app is open
+            // and no explicit user preference has been set (i.e., we're "following system").
             prefersDarkScheme.addEventListener("change", (event) => {
-                if (!localStorage.getItem('themePreference')) { // Only react if no explicit user preference
+                if (!localStorage.getItem('themePreference')) { // Only follow system if no explicit user choice
                     applyTheme(event.matches ? 'dark' : 'light');
                 }
             });
-            // --- End of Theme Application on Load ---
+            // --- End of Initial Theme Application on Load ---
 
-
-            // Function to display a temporary on-screen notification
+            /**
+             * Displays a temporary notification message on the screen.
+             * @param {string} message - The message to display.
+             */
             function showTemporaryNotification(message) {
                 globalNotification.textContent = message;
                 globalNotification.classList.remove('hidden');
-                // Remove existing animation to restart it
+                // Force reflow to restart animation every time
                 globalNotification.style.animation = 'none';
-                void globalNotification.offsetWidth; // Trigger reflow
+                void globalNotification.offsetWidth;
                 globalNotification.style.animation = 'fadeInOut 3s forwards';
 
+                // Hide after animation (or if JS fails to hide, CSS handles fade out)
                 setTimeout(() => {
                     globalNotification.classList.add('hidden');
-                }, 3000); // Hide after 3 seconds, matches animation duration
+                }, 3000);
             }
 
-            // Function to trigger a native browser notification
+            /**
+             * Triggers a native browser notification, if allowed.
+             * @param {string} title - The title of the notification.
+             * @param {string} bodyText - The body text of the notification.
+             */
             function showBrowserNotification(title, bodyText) {
                 if (!("Notification" in window)) {
                     showTemporaryNotification("Browser does not support notifications.");
@@ -478,14 +468,13 @@
                         if (permission === "granted") {
                             new Notification(title, { body: bodyText });
                         } else {
-                            showTemporaryNotification("Notification permission denied.");
+                            showTemporaryNotification("Notification permission denied by user.");
                         }
                     });
                 } else {
                     showTemporaryNotification("Notification permission was denied. Please allow it in browser settings.");
                 }
             }
-
 
             // Data for settings content
             const settingsData = {
@@ -501,7 +490,6 @@
                             <p>Console Nickname: My Switch</p>
                         </div>
                         <button id="resetConsoleButton" class="mt-6">Reset Console</button>
-                        <p id="resetMessage" class="mt-4 text-sm text-green-500 hidden">Console reset successfully!</p>
                     `
                 },
                 display: {
@@ -530,7 +518,6 @@
                         </div>
                         <button id="configureNotificationsButton" class="mt-6">Configure Notifications</button>
                         <button id="sendTestNotificationButton" class="mt-6 ml-4">Send Test Notification</button>
-                        <p id="notificationMessage" class="mt-4 text-sm text-green-500 hidden">Notification settings updated!</p>
                     `
                 },
                 'sleep-mode': {
@@ -563,52 +550,55 @@
                             </div>
                         </div>
                         <button id="adjustSleepSettingsButton" class="mt-6">Apply Sleep Settings</button>
-                        <p id="sleepModeMessage" class="mt-4 text-sm text-green-500 hidden">Sleep settings adjusted!</p>
                     `
                 }
             };
 
-            // Function to update the detail panel and header
+            /**
+             * Updates the detail panel content and screen header based on the selected setting.
+             * Attaches event listeners for dynamic elements within the loaded content.
+             * @param {string} settingId - The ID of the setting to display.
+             */
             function updateDetail(settingId) {
                 const data = settingsData[settingId];
                 if (data) {
                     settingDetail.innerHTML = data.content;
                     screenHeader.textContent = data.title;
 
-                    // Attach event listeners for buttons and other interactive elements
+                    // Send a message to the parent window indicating the selected setting.
+                    window.parent.postMessage({ type: 'settingSelected', settingId: settingId }, '*');
+
+                    // Attach event listeners for dynamic content
                     switch (settingId) {
                         case 'system':
                             const resetConsoleButton = document.getElementById('resetConsoleButton');
                             if (resetConsoleButton) {
                                 resetConsoleButton.onclick = () => {
-                                    resetConfirmModal.classList.remove('hidden');
+                                    resetConfirmDialog.classList.remove('hidden');
                                 };
                             }
                             break;
                         case 'display':
                             const themeToggle = document.getElementById('themeToggle');
                             if (themeToggle) {
-                                // Set toggle state based on current theme (dark-mode class on html)
+                                // Set toggle state based on current theme
                                 themeToggle.checked = htmlElement.classList.contains('dark-mode');
                                 themeToggle.onchange = () => {
-                                    // Apply theme based on checkbox state
                                     const newTheme = themeToggle.checked ? 'dark' : 'light';
                                     applyTheme(newTheme);
                                     showTemporaryNotification(`Switched to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'}`);
+                                    // Send dark mode setting to parent window
+                                    window.parent.postMessage({ type: 'themeChanged', theme: newTheme }, '*');
                                 };
                             }
                             break;
                         case 'notifications':
                             const configureNotificationsButton = document.getElementById('configureNotificationsButton');
                             const sendTestNotificationButton = document.getElementById('sendTestNotificationButton');
-                            const notificationMessage = document.getElementById('notificationMessage');
 
                             if (configureNotificationsButton) {
                                 configureNotificationsButton.onclick = () => {
-                                    notificationMessage.textContent = "Notification settings configured!";
-                                    notificationMessage.classList.remove('hidden');
                                     showTemporaryNotification("Notification settings configured!");
-                                    setTimeout(() => notificationMessage.classList.add('hidden'), 2000);
                                 };
                             }
                             if (sendTestNotificationButton) {
@@ -622,60 +612,55 @@
                             const autoSleepDockedSelect = document.getElementById('autoSleepDocked');
                             const screenDimmingToggle = document.getElementById('screenDimmingToggle');
                             const adjustSleepSettingsButton = document.getElementById('adjustSleepSettingsButton');
-                            const sleepModeMessage = document.getElementById('sleepModeMessage');
 
-                            // Load saved sleep mode settings
+                            // Load saved sleep mode settings, or use defaults
                             const savedSleepMode = JSON.parse(localStorage.getItem('sleepModeSettings')) || {
                                 autoPlaying: '15min',
                                 autoDocked: '1hour',
                                 screenDimming: true
                             };
-                            autoSleepPlayingSelect.value = savedSleepMode.autoPlaying;
-                            autoSleepDockedSelect.value = savedSleepMode.autoDocked;
-                            screenDimmingToggle.checked = savedSleepMode.screenDimming;
 
-                            // Event listeners for changes
-                            autoSleepPlayingSelect.onchange = () => {
-                                savedSleepMode.autoPlaying = autoSleepPlayingSelect.value;
-                                localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
-                                showTemporaryNotification(`Auto-sleep (playing) set to ${autoSleepPlayingSelect.options[autoSleepPlayingSelect.selectedIndex].text}`);
-                            };
-                            autoSleepDockedSelect.onchange = () => {
-                                savedSleepMode.autoDocked = autoSleepDockedSelect.value;
-                                localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
-                                showTemporaryNotification(`Auto-sleep (docked) set to ${autoSleepDockedSelect.options[autoSleepDockedSelect.selectedIndex].text}`);
-                            };
-                            screenDimmingToggle.onchange = () => {
-                                savedSleepMode.screenDimming = screenDimmingToggle.checked;
-                                localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
-                                const status = screenDimmingToggle.checked ? 'On' : 'Off';
-                                showTemporaryNotification(`Screen Dimming set to ${status}`);
-                            };
+                            // Apply saved settings to the UI
+                            if (autoSleepPlayingSelect) autoSleepPlayingSelect.value = savedSleepMode.autoPlaying;
+                            if (autoSleepDockedSelect) autoSleepDockedSelect.value = savedSleepMode.autoDocked;
+                            if (screenDimmingToggle) screenDimmingToggle.checked = savedSleepMode.screenDimming;
+
+                            // Event listeners to save changes to localStorage and provide feedback
+                            if (autoSleepPlayingSelect) {
+                                autoSleepPlayingSelect.onchange = () => {
+                                    savedSleepMode.autoPlaying = autoSleepPlayingSelect.value;
+                                    localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
+                                    showTemporaryNotification(`Auto-sleep (playing) set to ${autoSleepPlayingSelect.options[autoSleepPlayingSelect.selectedIndex].text}`);
+                                };
+                            }
+                            if (autoSleepDockedSelect) {
+                                autoSleepDockedSelect.onchange = () => {
+                                    savedSleepMode.autoDocked = autoSleepDockedSelect.value;
+                                    localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
+                                    showTemporaryNotification(`Auto-sleep (docked) set to ${autoSleepDockedSelect.options[autoSleepDockedSelect.selectedIndex].text}`);
+                                };
+                            }
+                            if (screenDimmingToggle) {
+                                screenDimmingToggle.onchange = () => {
+                                    savedSleepMode.screenDimming = screenDimmingToggle.checked;
+                                    localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
+                                    const status = screenDimmingToggle.checked ? 'On' : 'Off';
+                                    showTemporaryNotification(`Screen Dimming set to ${status}`);
+                                };
+                            }
 
                             if (adjustSleepSettingsButton) {
                                 adjustSleepSettingsButton.onclick = () => {
-                                    // This button primarily serves to confirm current settings and show a message
-                                    sleepModeMessage.textContent = "Sleep settings applied!";
-                                    sleepModeMessage.classList.remove('hidden');
-                                    showTemporaryNotification("Sleep settings updated!");
-                                    setTimeout(() => sleepModeMessage.classList.add('hidden'), 2000);
+                                    showTemporaryNotification("Sleep settings applied!");
                                 };
                             }
                             break;
                         default:
-                            // Generic handler for other buttons that just show a message
+                            // Attach generic click handler for any other buttons that might exist
                             const buttons = settingDetail.querySelectorAll('button');
                             buttons.forEach(button => {
                                 button.onclick = () => {
-                                    const messageId = button.id.replace('Button', 'Message');
-                                    const messageElement = document.getElementById(messageId);
-                                    if (messageElement) {
-                                        messageElement.classList.remove('hidden');
-                                        showTemporaryNotification(`${button.textContent} action performed!`);
-                                        setTimeout(() => {
-                                            messageElement.classList.add('hidden');
-                                        }, 2000);
-                                    }
+                                    showTemporaryNotification(`${button.textContent} action performed!`);
                                 };
                             });
                             break;
@@ -689,7 +674,7 @@
             // Event listener for menu item clicks
             settingsMenu.addEventListener('click', (event) => {
                 const targetLi = event.target.closest('li');
-                if (targetLi) {
+                if (targetLi && targetLi.dataset.setting) { // Ensure a list item with a data-setting was clicked
                     if (selectedMenuItem) {
                         selectedMenuItem.classList.remove('selected');
                     }
@@ -700,9 +685,9 @@
                 }
             });
 
-            // Keyboard navigation (Up/Down arrows)
+            // Keyboard navigation (Up/Down arrows) for menu
             document.addEventListener('keydown', (event) => {
-                const menuItems = Array.from(settingsMenu.children);
+                const menuItems = Array.from(settingsMenu.querySelectorAll('li[data-setting]')); // Only select valid menu items
                 let currentIndex = menuItems.indexOf(selectedMenuItem);
 
                 if (event.key === 'ArrowDown') {
@@ -728,27 +713,38 @@
                 }
             });
 
-            // Reset Console Modal functionality
-            confirmResetBtn.onclick = () => {
-                localStorage.clear();
-                sessionStorage.clear();
-                console.log('Local Storage and Session Storage cleared.');
+            // Reset Console Dialog functionality
+            if (confirmResetBtn) {
+                confirmResetBtn.onclick = () => {
+                    localStorage.clear(); // Clear all localStorage data
+                    sessionStorage.clear(); // Clear all sessionStorage data
+                    console.log('Local Storage and Session Storage cleared.');
 
-                // Reset theme to dark mode (default for new snippet)
-                localStorage.setItem('themePreference', 'dark');
-                htmlElement.classList.remove('dark-mode'); // Ensure visual reset to light mode if default is light after clear
+                    // Re-apply default theme (dark) and send message to parent
+                    applyTheme('dark');
+                    window.parent.postMessage({ type: 'themeChanged', theme: 'dark' }, '*'); // Inform parent about theme reset
 
-                showTemporaryNotification("Console has been reset and data cleared!");
-                resetConfirmModal.classList.add('hidden');
-                // Re-initialize the current setting to reflect changes
-                updateDetail(selectedMenuItem.dataset.setting);
-            };
+                    // Reset sleep mode settings to default after clear
+                    localStorage.setItem('sleepModeSettings', JSON.stringify({
+                        autoPlaying: '15min',
+                        autoDocked: '1hour',
+                        screenDimming: true
+                    }));
 
-            cancelResetBtn.onclick = () => {
-                resetConfirmModal.classList.add('hidden');
-            };
+                    showTemporaryNotification("Console has been reset and data cleared!");
+                    resetConfirmDialog.classList.add('hidden');
+                    // Re-initialize the current setting detail to reflect cleared data or default states
+                    updateDetail(selectedMenuItem.dataset.setting);
+                };
+            }
 
-            // Initialize with the first setting
+            if (cancelResetBtn) {
+                cancelResetBtn.onclick = () => {
+                    resetConfirmDialog.classList.add('hidden');
+                };
+            }
+
+            // Initialize the app with the first setting displayed
             updateDetail(selectedMenuItem.dataset.setting);
         });
     </script>

@@ -3,28 +3,18 @@
 /**
  * Updates the current time displayed in the UI.
  * This function is set to update every minute.
- *
- * If you do not see the time updating, please check your browser's
- * developer console (usually F12) for any JavaScript errors.
- * Also, ensure you are waiting at least one minute for the update to occur.
  */
 function updateTime() {
-    const now = new Date(); // Get the current date and time
+    const now = new Date();
     let hours = now.getHours();
     const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM'; // Determine AM or PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
 
-    // Convert to 12-hour format (e.g., 13:00 becomes 1:00 PM)
     hours = hours % 12;
-    hours = hours ? hours : 12; // If hours is 0 (midnight), make it 12
-
-    // Add leading zero to minutes if less than 10 (e.g., 5 becomes 05)
+    hours = hours ? hours : 12;
     const strMinutes = minutes < 10 ? '0' + minutes : minutes;
 
-    // Construct the final time string (e.g., "5:24 PM")
     const currentTimeString = `${hours}:${strMinutes} ${ampm}`;
-
-    // Get the DOM element where the time should be displayed
     const timeElement = document.getElementById('current-time');
     if (timeElement) {
         timeElement.textContent = currentTimeString;
@@ -36,136 +26,222 @@ function updateTime() {
 
 /**
  * Updates the battery status (icon and percentage) in the UI.
- * This function utilizes the standard Battery Status API to get real-time data.
  * @param {BatteryManager} battery - The BatteryManager object from navigator.getBattery().
  */
 function updateBatteryStatus(battery) {
     const batteryIcon = document.getElementById('battery-icon');
     const batteryPercentage = document.getElementById('battery-percentage');
 
-    // Ensure UI elements are present in the DOM
     if (!batteryIcon || !batteryPercentage) {
         console.error('Battery UI elements (icon or percentage) not found in the DOM. Cannot update battery status.');
         return;
     }
 
-    // Get the battery level as a percentage (0-100)
     const level = Math.floor(battery.level * 100);
-    // Get the charging status (true/false)
     const isCharging = battery.charging;
 
-    // Update the displayed percentage text
     batteryPercentage.textContent = `${level}%`;
 
-    // Clear any existing Font Awesome battery icon classes and custom colors
     batteryIcon.classList.remove(
         'fa-battery-empty', 'fa-battery-quarter', 'fa-battery-half',
         'fa-battery-three-quarters', 'fa-battery-full', 'fa-bolt'
     );
-    batteryIcon.style.color = ''; // Reset custom color styles
+    batteryIcon.style.color = '';
 
-    // Apply the correct Font Awesome icon and color based on status
     if (isCharging) {
-        batteryIcon.classList.add('fa-bolt'); // Display charging bolt icon
-        batteryIcon.style.color = '#4CAF50'; // Green color for charging state
-    } else if (level <= 10) { // Very low battery (0-10%)
+        batteryIcon.classList.add('fa-bolt');
+        batteryIcon.style.color = '#4CAF50';
+    } else if (level <= 10) {
         batteryIcon.classList.add('fa-battery-empty');
-        batteryIcon.style.color = 'red'; // Red color for critical warning
-    } else if (level <= 30) { // Low battery (11-30%)
+        batteryIcon.style.color = 'red';
+    } else if (level <= 30) {
         batteryIcon.classList.add('fa-battery-quarter');
-        batteryIcon.style.color = 'orange'; // Orange for a general warning
-    } else if (level <= 60) { // Medium battery (31-60%)
+        batteryIcon.style.color = 'orange';
+    } else if (level <= 60) {
         batteryIcon.classList.add('fa-battery-half');
-    } else if (level <= 85) { // High battery (61-85%)
+    } else if (level <= 85) {
         batteryIcon.classList.add('fa-battery-three-quarters');
-    } else { // Full battery (86-100%)
+    } else {
         batteryIcon.classList.add('fa-battery-full');
     }
 }
 
 /**
  * Initializes battery status monitoring.
- * Attempts to use the Battery Status API. If available, it sets up listeners
- * for real-time updates. If not supported, it displays a fallback status.
  */
 function initializeBattery() {
-    // Check if the Battery Status API is supported by the current browser/environment
     if ('getBattery' in navigator) {
         navigator.getBattery().then(function(battery) {
-            // Initial update of the battery status immediately on load
             updateBatteryStatus(battery);
-
-            // Set up event listeners to continuously update the battery status
-            // when the level or charging state changes.
             battery.addEventListener('levelchange', () => updateBatteryStatus(battery));
             battery.addEventListener('chargingchange', () => updateBatteryStatus(battery));
         }).catch(function(error) {
-            // Handle cases where the API is present but an error occurs (e.g., permissions denied)
             console.error('Failed to access Battery Status API:', error);
-            // Display a fallback "N/A" status in the UI
             const batteryStatusElement = document.getElementById('battery-status');
             if (batteryStatusElement) {
                 batteryStatusElement.innerHTML = '<i class="fas fa-battery-full"></i> <span class="ml-1 text-base">N/A</span>';
-                batteryStatusElement.title = 'Battery status unavailable'; // Add a helpful tooltip
+                batteryStatusElement.title = 'Battery status unavailable';
             }
         });
     } else {
-        // Handle cases where the Battery Status API is not supported at all
         console.warn('Battery Status API not supported in this browser/environment. Battery status will not be real-time.');
-        // Display a default "N/A" status in the UI
         const batteryStatusElement = document.getElementById('battery-status');
         if (batteryStatusElement) {
             batteryStatusElement.innerHTML = '<i class="fas fa-battery-full"></i> <span class="ml-1 text-base">N/A</span>';
-            batteryStatusElement.title = 'Battery status not supported'; // Add a helpful tooltip
+            batteryStatusElement.title = 'Battery status not supported';
         }
     }
 }
 
+// --- Dark/Light Mode Setter Functionality ---
+
+// Media query to detect the user's system color scheme preference.
+const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
 /**
- * Main entry point for the JavaScript.
- * This function executes once the entire HTML document has been loaded and parsed
- * (due to 'defer' on the script tag).
+ * Applies the specified theme to the document.
+ * This function adds or removes the 'dark-mode' class from the <html> element
+ * and stores the user's preference in localStorage for persistence across sessions.
+ * @param {string} theme - The theme to apply: 'light' or 'dark'.
  */
+function applyTheme(theme) {
+    const htmlElement = document.documentElement;
+    if (theme === 'dark') {
+        htmlElement.classList.add('dark-mode');
+    } else {
+        htmlElement.classList.remove('dark-mode');
+    }
+    localStorage.setItem('themePreference', theme);
+}
+
+// --- Iframe Manager Functionality ---
+
+// Store a reference to the currently open iframe's window
+let currentIframeWindow = null;
+
+/**
+ * Creates and displays an iframe with a close button.
+ * Prevents multiple iframes from being opened simultaneously.
+ * @param {string} url - The URL to load inside the iframe.
+ * @param {string} [iframeId='dynamic-iframe-container'] - A unique ID for the iframe container.
+ */
+function openIframe(url, iframeId = 'dynamic-iframe-container') {
+    if (document.getElementById(iframeId)) {
+        console.warn(`Iframe with ID '${iframeId}' is already open. Not opening a new one.`);
+        return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = iframeId;
+    overlay.classList.add('iframe-overlay');
+
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('iframe-wrapper');
+
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.classList.add('iframe-content');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('title', 'External Content');
+
+    // Store a reference to the iframe's content window
+    iframe.onload = () => {
+        currentIframeWindow = iframe.contentWindow;
+        // After the iframe loads, send its current theme preference
+        // This is crucial for synchronizing the theme of the loaded settings.html
+        const currentTheme = localStorage.getItem('themePreference') || (prefersDarkScheme.matches ? 'dark' : 'light');
+        if (currentIframeWindow) { // Ensure window exists before posting message
+             currentIframeWindow.postMessage({ type: 'parentTheme', theme: currentTheme }, '*');
+        }
+    };
+
+
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('iframe-close-btn');
+    closeButton.innerHTML = '&times;';
+    closeButton.setAttribute('aria-label', 'Close Iframe');
+
+    closeButton.addEventListener('click', () => {
+        closeIframe(iframeId);
+    });
+
+    wrapper.appendChild(iframe);
+    wrapper.appendChild(closeButton);
+    overlay.appendChild(wrapper);
+    document.body.appendChild(overlay);
+
+    iframe.focus();
+}
+
+/**
+ * Closes and removes a specific iframe overlay from the DOM.
+ * @param {string} [iframeId='dynamic-iframe-container'] - The ID of the iframe container to close.
+ */
+function closeIframe(iframeId = 'dynamic-iframe-container') {
+    const overlay = document.getElementById(iframeId);
+    if (overlay) {
+        overlay.remove();
+        console.log(`Iframe with ID '${iframeId}' closed successfully.`);
+        currentIframeWindow = null; // Clear the reference
+    } else {
+        console.warn(`Iframe with ID '${iframeId}' not found for closing. It might already be closed.`);
+    }
+}
+
+// --- Main Entry Point: Execute on DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Perform an initial update of the time when the page first loads
+    // 1. Initialize time display
     updateTime();
-    // Initialize the battery status monitoring
+    setInterval(updateTime, 60000);
+
+    // 2. Initialize battery status monitoring
     initializeBattery();
 
-    // Set an interval to call `updateTime` every 60 seconds (1 minute).
-    // This ensures the time displayed is always current.
-    setInterval(updateTime, 60000); // 60000 milliseconds = 1 minute
-});
-
-/**
- * Function to simulate a blackout effect and then attempt to close the current tab.
- *
- * The blackout is achieved by transitioning a full-screen overlay from transparent to black.
- * The window.close() method is then called.
- *
- * IMPORTANT: window.close() will only work if the tab/window was opened via JavaScript (e.g., window.open()).
- * Most modern browsers prevent scripts from closing tabs that the user opened manually, for security and user experience reasons.
- *
- * This function assumes there is an HTML element with the ID 'blackoutOverlay'
- * and that CSS transitions are set up for its 'background-color' property.
- */
-function turnOff() {
-    const overlay = document.getElementById('blackoutOverlay');
-
-    // 1. Activate the blackout effect
-    overlay.classList.add('active'); // This triggers the CSS transition
-
-    // 2. After the transition finishes (3 seconds as per CSS), attempt to close the tab
-    setTimeout(() => {
-        try {
-            // Attempt to close the window
-            window.close();
-            console.log('Attempted to close the tab.');
-        } catch (error) {
-            // Log any errors if the window cannot be closed
-            console.error('Could not close the tab. Reason:', error.message);
-            // You could display a user-friendly message here if desired
-            // For example: alert('The tab could not be closed automatically due to browser security policies.');
+    // 3. Initialize theme application based on localStorage or system preference
+    const storedTheme = localStorage.getItem('themePreference');
+    if (storedTheme) {
+        applyTheme(storedTheme);
+    } else if (prefersDarkScheme.matches) {
+        applyTheme('dark');
+    } else {
+        applyTheme('light');
+    }
+    // Listen for system theme changes, but only if no explicit user preference is set
+    prefersDarkScheme.addEventListener("change", (event) => {
+        if (!localStorage.getItem('themePreference')) {
+             applyTheme(event.matches ? 'dark' : 'light');
         }
-    }, 3000); // Wait for the 3-second blackout transition to complete
-}
+    });
+
+    // --- Listen for messages from iframes (e.g., settings.html) ---
+    window.addEventListener('message', (event) => {
+        // Ensure the message comes from a trusted origin, especially in production
+        // For local files, event.origin will be "null" or "file://", which is tricky to validate
+        // For web servers, it will be the actual URL (e.g., "http://localhost:8000")
+        // In this example, we accept all origins for simplicity with local files.
+
+        const message = event.data;
+
+        if (message && message.type === 'themeChanged') {
+            console.log(`Main page received theme changed message from iframe: ${message.theme}`);
+            applyTheme(message.theme); // Apply the theme received from the iframe
+        }
+        // You can add more message types here as your application grows
+        // else if (message && message.type === 'settingSelected') {
+        //     console.log(`Setting selected in iframe: ${message.settingId}`);
+        //     // Potentially update main UI based on selected setting in iframe
+        // }
+    });
+
+    // --- Example: Trigger iframe when the settings navigation button is clicked ---
+    const settingsNavButton = document.querySelector('.nav-button i.fa-cog');
+    if (settingsNavButton && settingsNavButton.parentElement) {
+        settingsNavButton.parentElement.addEventListener('click', () => {
+            console.log("Settings navigation button clicked. Opening settings.html.");
+            openIframe('settings.html');
+        });
+    } else {
+        console.warn("Settings navigation button (or its parent) not found. Iframe trigger not set up.");
+    }
+});
