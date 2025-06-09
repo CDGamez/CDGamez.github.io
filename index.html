@@ -64,7 +64,7 @@
             <button class="nav-button" aria-label="Shop">
                 <i class="fas fa-shopping-bag"></i>
             </button>
-            <button class="nav-button" aria-label="Sign in">
+            <button class="nav-button" aria-label="Sign in" id="sign-in-button">
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
             </button>
             <button class="nav-button" aria-label="Games">
@@ -93,25 +93,25 @@
     window.addEventListener('load', async function () {
         await Clerk.load();
 
-        const authActionsContainer = document.getElementById('auth-actions');
+        const signInButton = document.getElementById('sign-in-button');
+        const userButtonContainer = document.getElementById('userDiv');
 
         if (Clerk.user) {
-            // If user is logged in, mount the user button
-            authActionsContainer.innerHTML = `<div id="user-button"></div>`;
-            const userButtonDiv = document.getElementById('user-button');
-            Clerk.mountUserButton(userButtonDiv);
+            // User is logged in
+            signInButton.style.display = 'none'; // Hide the sign-in button
+            userButtonContainer.style.display = 'block'; // Ensure container is visible
+            Clerk.mountUserButton(userButtonContainer); // Mount user button into its container
         } else {
-            // If no user, show a button to open the sign-in pop-up
-            authActionsContainer.innerHTML = `<button id="sign-in-button">Sign In</button>`;
-            const signInButton = document.getElementById('sign-in-button');
-
+            // No user logged in
+            signInButton.style.display = 'block'; // Show the sign-in button
+            userButtonContainer.style.display = 'none'; // Hide the user button container
+            
+            // Attach event listener to the pre-existing sign-in button
             signInButton.addEventListener('click', () => {
                 Clerk.openSignIn({
-                    // Optional: You can customize the redirect URLs after sign-in/sign-up
-                    // afterSignInUrl: '/dashboard', // Redirect to /dashboard after successful sign-in
-                    // afterSignUpUrl: '/onboarding', // Redirect to /onboarding after successful sign-up
-                    // You can also specify an oauthFlow for social logins: 'popup' or 'redirect'
-                    // oauthFlow: 'popup' // Generally defaults to 'auto' which is often 'popup'
+                    // Optional: customize redirect URLs if needed
+                    // afterSignInUrl: '/dashboard',
+                    // afterSignUpUrl: '/onboarding',
                 });
             });
         }
