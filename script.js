@@ -136,3 +136,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // This ensures the time displayed is always current.
     setInterval(updateTime, 60000); // 60000 milliseconds = 1 minute
 });
+
+/**
+ * Function to simulate a blackout effect and then attempt to close the current tab.
+ *
+ * The blackout is achieved by transitioning a full-screen overlay from transparent to black.
+ * The window.close() method is then called.
+ *
+ * IMPORTANT: window.close() will only work if the tab/window was opened via JavaScript (e.g., window.open()).
+ * Most modern browsers prevent scripts from closing tabs that the user opened manually, for security and user experience reasons.
+ *
+ * This function assumes there is an HTML element with the ID 'blackoutOverlay'
+ * and that CSS transitions are set up for its 'background-color' property.
+ */
+function turnOff() {
+    const overlay = document.getElementById('blackoutOverlay');
+
+    // 1. Activate the blackout effect
+    overlay.classList.add('active'); // This triggers the CSS transition
+
+    // 2. After the transition finishes (3 seconds as per CSS), attempt to close the tab
+    setTimeout(() => {
+        try {
+            // Attempt to close the window
+            window.close();
+            console.log('Attempted to close the tab.');
+        } catch (error) {
+            // Log any errors if the window cannot be closed
+            console.error('Could not close the tab. Reason:', error.message);
+            // You could display a user-friendly message here if desired
+            // For example: alert('The tab could not be closed automatically due to browser security policies.');
+        }
+    }, 3000); // Wait for the 3-second blackout transition to complete
+}

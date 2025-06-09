@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body class="bg-gray-200">
+    <div id="blackoutOverlay" class="blackout-overlay"></div>
     <div class="console-container">
         <header class="top-bar">
             <div class="user-profile">
@@ -65,10 +66,10 @@
             <button class="nav-button" aria-label="Games">
                 <i class="fas fa-gamepad"></i>
             </button>
-            <button class="nav-button" aria-label="Settings">
+            <button class="nav-button" aria-label="Settings" onclick="openIframe('./settings.html');">
                 <i class="fas fa-cog"></i>
             </button>
-            <button class="nav-button" aria-label="Power Off">
+            <button class="nav-button" aria-label="Power Off" onclick="turnOff();">
                 <i class="fas fa-power-off"></i>
             </button>
         </nav>
@@ -84,5 +85,6 @@
         </footer>
     </div>
     <script src="./script.js" defer></script>
+    <script src="./iframe-manager.js" defer></script>
 </body>
 </html>
