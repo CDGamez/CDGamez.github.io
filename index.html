@@ -20,11 +20,10 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body class="bg-gray-200">
-    <div id="app">
     <div id="blackoutOverlay" class="blackout-overlay"></div>
     <div class="console-container">
         <header class="top-bar">
-            <div class="user-profile">
+            <div class="user-profile" id="userDiv">
                 <UserButton />
                 <span class="text-gray-700 font-semibold text-lg">Username</span>
             </div>
@@ -88,31 +87,26 @@
                 <span><i class="fas fa-play mr-1"></i>Start</span>
             </div>
         </footer>
-    </div>
     <script src="./script.js" defer></script>
     <script src="./iframe-manager.js" defer></script>
     <script>
-        window.addEventListener('load', async function () {
-            await Clerk.load()
+    window.addEventListener('load', async function () {
+        await Clerk.load();
+
+        const userDiv = document.getElementById('userDiv'); // Get the dedicated container
 
         if (Clerk.user) {
-      document.getElementById('app').innerHTML = `
-        <div id="user-button"></div>
-      `
-
-      const userButtonDiv = document.getElementById('user-button')
-
-      Clerk.mountUserButton(userButtonDiv)
-    } else {
-      document.getElementById('app').innerHTML = `
-        <div id="sign-in"></div>
-      `
-
-      const signInDiv = document.getElementById('sign-in')
-
-      Clerk.mountSignIn(signInDiv)
-    }
-  })
+            // If user is logged in, mount the user button inside 'clerk-container'
+            userDiv.innerHTML = `<div id="user-button"></div>`;
+            const userButtonDiv = document.getElementById('user-button');
+            Clerk.mountUserButton(userButtonDiv);
+        } else {
+            // If no user, mount the sign-in component inside 'clerk-container'
+            userDiv.innerHTML = `<div id="sign-in"></div>`;
+            const signInDiv = document.getElementById('sign-in');
+            Clerk.mountSignIn(signInDiv);
+        }
+    });
 </script>
 </div>
 </body>
