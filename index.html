@@ -12,6 +12,15 @@
     <link rel="manifest" href="./manifest.json">
 
     <title>CDGamez</title>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+                appId: "8007429f-daaf-49e6-b3ff-beb7c413629c",
+            });
+        });
+    </script>
     <script
         async
         crossorigin="anonymous"
