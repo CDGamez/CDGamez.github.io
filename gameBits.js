@@ -4,8 +4,15 @@
   const SUPABASE_URL = "https://qvuoiokplvfjjenusagl.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2dW9pb2twbHZmamplbnVzYWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NTY1MjQsImV4cCI6MjA2NTMzMjUyNH0.3rzk3w9Ju1svH9fq3i50Ehg4Q0EfX8CQVGVH8sRCxa4";
 
-  //Add Supabase
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Load Supabase JS dynamically
+  function loadSupabaseScript(callback) {
+    if (window.supabase) return callback(); // already loaded
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js";
+    script.onload = () => callback();
+    script.onerror = () => alert("Failed to load Supabase SDK.");
+    document.head.appendChild(script);
+  }
 
   // Inject CSS styles for modal UI
   function injectStyles() {
@@ -125,7 +132,7 @@
   // CardHandler class
   class CardHandler {
     constructor(supabaseUrl, supabaseAnonKey) {
-      this.supabase = supabaseJs.createClient(supabaseUrl, supabaseAnonKey);
+      this.supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
     }
 
     generateCardNumber() {
@@ -437,8 +444,8 @@
 
   // Main launcher function, globally available without params
   window.launchCardHandlerUI = function () {
-    injectStyles();
     loadSupabaseScript(() => {
+      injectStyles();
       const handler = new CardHandler(SUPABASE_URL, SUPABASE_ANON_KEY);
       const ui = new CardHandlerUI(handler);
       ui.open();
