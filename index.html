@@ -9,31 +9,9 @@
         }
     </script>
 
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/OneSignalSDKWorker.js')
-      .then(function(reg) {
-        console.log('SW registered:', reg.scope);
-      })
-      .catch(function(err) {
-        console.error('SW registration failed:', err);
-      });
-  }
-</script>
-
-
     <link rel="manifest" href="./manifest.json">
 
     <title>CDGamez</title>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "8007429f-daaf-49e6-b3ff-beb7c413629c",
-            });
-        });
-    </script>
     <script
         async
         crossorigin="anonymous"
@@ -96,8 +74,8 @@
             <button class="nav-button" aria-label="Sign in" id="sign-in-button">
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
             </button>
-            <button class="nav-button" aria-label="Games">
-                <i class="fas fa-gamepad"></i>
+            <button class="nav-button" aria-label="Card">
+                <i class="fa-solid fa-credit-card" onclick="launchCardHandlerUI();"></i>
             </button>
             <button class="nav-button" aria-label="Settings" onclick="openIframe('./settings.html');">
                 <i class="fas fa-cog"></i>
@@ -118,6 +96,7 @@
         </footer>
     <script src="./script.js" defer></script>
     <script src="./iframe-manager.js" defer></script>
+    <script src="./gameBits.js" defer></script>
     <script>
     window.addEventListener('load', async function () {
         await Clerk.load();
@@ -130,6 +109,15 @@
             signInButton.style.display = 'none'; // Hide the sign-in button
             userButtonContainer.style.display = 'block'; // Ensure container is visible
             Clerk.mountUserButton(userButtonContainer); // Mount user button into its container
+            const userId = user.id;
+            const fullName = user.fullName;
+            const firstName = user.firstName;
+            const lastName = user.lastName;
+            const email = user.primaryEmailAddress.emailAddress;
+            const profileImage = user.imageUrl;
+
+            const userProfileDiv = document.getElementById('userDiv');
+            userProfileDiv.innerHTML += '<p>${firstName}</p>';
         } else {
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button

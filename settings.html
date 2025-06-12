@@ -516,7 +516,7 @@
                             <p>eShop Notifications: On</p>
                             <p>Low Battery Notification: Off</p>
                         </div>
-                        <button id="configureNotificationsButton" class="mt-6">Configure Notifications</button>
+                        <button id="configureNotificationsButton" class="mt-6" onclick="requestNotificationPermission();">Configure Notifications</button>
                         <button id="sendTestNotificationButton" class="mt-6 ml-4">Send Test Notification</button>
                     `
                 },
@@ -593,14 +593,8 @@
                             }
                             break;
                         case 'notifications':
-                            const configureNotificationsButton = document.getElementById('configureNotificationsButton');
                             const sendTestNotificationButton = document.getElementById('sendTestNotificationButton');
 
-                            if (configureNotificationsButton) {
-                                configureNotificationsButton.onclick = () => {
-                                    showTemporaryNotification("Notification settings configured!");
-                                };
-                            }
                             if (sendTestNotificationButton) {
                                 sendTestNotificationButton.onclick = () => {
                                     showBrowserNotification("Switch Notification", "This is a test notification from your console!");
