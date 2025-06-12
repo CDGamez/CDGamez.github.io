@@ -4,15 +4,8 @@
   const SUPABASE_URL = "https://qvuoiokplvfjjenusagl.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2dW9pb2twbHZmamplbnVzYWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NTY1MjQsImV4cCI6MjA2NTMzMjUyNH0.3rzk3w9Ju1svH9fq3i50Ehg4Q0EfX8CQVGVH8sRCxa4";
 
-  // Load Supabase if needed
-  function loadSupabaseScript(callback) {
-    if (window.supabaseJs) return callback();
-    const script = document.createElement("script");
-    script.src =
-      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
-    script.onload = callback;
-    document.head.appendChild(script);
-  }
+  //Add Supabase
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // Inject CSS styles for modal UI
   function injectStyles() {
