@@ -101,7 +101,10 @@
     <script src="./gameBits.js" defer></script>
     <script>
     window.addEventListener('load', async function () {
-        await Clerk.load();
+        await Clerk.load({
+            frontendApi: 'accounts.cdgamez.xyz',
+            domain: 'accounts.cdgamez.xyz'
+        });
 
         const signInButton = document.getElementById('sign-in-button');
         const userButtonContainer = document.getElementById('userDiv');
