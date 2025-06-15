@@ -98,56 +98,66 @@
         </footer>
     <script src="./script.js" defer></script>
     <script src="./iframe-manager.js" defer></script>
-    <script>
-    window.addEventListener('load', async function () {
-        await Clerk.load();
+    <script type="module">
+window.addEventListener('load', async function () {
+    await Clerk.load();
 
-        const signInButton = document.getElementById('sign-in-button');
-        const userButtonContainer = document.getElementById('userDiv');
-        let signedIn = false;
+    const signInButton = document.getElementById('sign-in-button');
+    const userButtonContainer = document.getElementById('userDiv');
 
-        if (Clerk.user) {
-            // User is logged in
-            signInButton.style.display = 'none'; // Hide the sign-in button
-            userButtonContainer.style.display = 'block'; // Ensure container is visible
-            Clerk.mountUserButton(userButtonContainer); // Mount user button into its container
-            const user = Clerk.user;
-            const userId = user.id;
-            window.userId = userId;
+    window.signedIn = false;  // Global flag
+
+    function handleUser() {
+        const user = Clerk.user;
+        if (user) {
+            signInButton.style.display = 'none';
+            userButtonContainer.style.display = 'block';
+            Clerk.mountUserButton(userButtonContainer);
+            
+            window.userId = user.id;
+            window.firstName = user.firstName;
+            window.email = user.primaryEmailAddress.emailAddress;
             window.signedIn = true;
-            const firstName = user.firstName;
-            window.firstName = firstName;
-            const email = user.primaryEmailAddress.emailAddress;
-            window.email = email;
-            const userProfileDiv = document.getElementById('userDiv');
-            userProfileDiv.insertAdjacentHTML('beforeend', `<p>${firstName}</p>`);
-            function waitForSignInAndRun(action) {
-                if (window.signedIn === true) {
-                    action();
-                } else {
-                    console.log("Waiting for sign-in...");
-                    setTimeout(() => waitForSignInAndRun(action), 200);
-                }
-            }
 
-            waitForSignInAndRun(generateCard);
-
+            userButtonContainer.insertAdjacentHTML('beforeend', `<p>${window.firstName}</p>`);
         } else {
-            // No user logged in
-            signInButton.style.display = 'block'; // Show the sign-in button
-            userButtonContainer.style.display = 'none'; // Hide the user button container
+            signInButton.style.display = 'block';
+            userButtonContainer.style.display = 'none';
             window.signedIn = false;
-            // Attach event listener to the pre-existing sign-in button
-            signInButton.addEventListener('click', () => {
-                Clerk.openSignIn({
-                    // Optional: customize redirect URLs if needed
-                    // afterSignInUrl: '/dashboard',
-                    // afterSignUpUrl: '/onboarding',
-                });
-            });
         }
+    }
+
+    // Run on initial load
+    handleUser();
+
+    // Listen for changes in auth state (recommended with Clerk)
+    Clerk.addListener(handleUser);
+
+    // Example polling wrapper
+    function waitForSignInAndRun(action) {
+        if (window.signedIn === true) {
+            action();
+        } else {
+            console.log("Waiting for sign-in...");
+            setTimeout(() => waitForSignInAndRun(action), 200);
+        }
+    }
+
+    // Example usage
+    waitForSignInAndRun(generateCard);
+
+    // Set up sign-in button click
+    signInButton.addEventListener('click', () => {
+        Clerk.openSignIn();
     });
+});
+
+// Example generateCard function (replace with your logic)
+function generateCard() {
+    console.log("✅ generateCard called — user is signed in!");
+}
 </script>
+
 <script src="./gameBits.mjs" type="module" crossorigin="anonymous"></script>
 </div>
 </body>
