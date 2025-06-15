@@ -104,11 +104,7 @@
 
         const signInButton = document.getElementById('sign-in-button');
         const userButtonContainer = document.getElementById('userDiv');
-        const cardButton = document.getElementById("cardButton");
-        function enableCardBtn () {
-            cardButton.ariaDisabled = "false";
-        }
-        let signedIn = "false";
+        let signedIn = false;
 
         if (Clerk.user) {
             // User is logged in
@@ -118,19 +114,18 @@
             const user = Clerk.user;
             const userId = user.id;
             window.userId = userId;
-            window.signedIn = "true";
+            window.signedIn = true;
             const firstName = user.firstName;
             window.firstName = firstName;
             const email = user.primaryEmailAddress.emailAddress;
             window.email = email;
-            enableCardBtn();
             const userProfileDiv = document.getElementById('userDiv');
             userProfileDiv.innerHTML += `<p>${firstName}</p>`;
         } else {
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button
             userButtonContainer.style.display = 'none'; // Hide the user button container
-            window.signedIn = "false";
+            window.signedIn = false;
             // Attach event listener to the pre-existing sign-in button
             signInButton.addEventListener('click', () => {
                 Clerk.openSignIn({
