@@ -17,10 +17,10 @@
     <script
         async
         crossorigin="anonymous"
-        data-clerk-publishable-key="pk_test_b24tc2F3Zmx5LTQwLmNsZXJrLmFjY291bnRzLmRldiQ"
-        src="https://on-sawfly-40.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
-        type="text/javascript"
-    ></script>
+        data-clerk-publishable-key="pk_live_Y2xlcmsuY2RnYW1lei54eXok"
+        src="https://clerk.cdgamez.xyz/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+        type="text/javascript">
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -98,16 +98,13 @@
         </footer>
     <script src="./script.js" defer></script>
     <script src="./iframe-manager.js" defer></script>
-    <script src="./gameBits.js" defer></script>
     <script>
     window.addEventListener('load', async function () {
-        await Clerk.load({
-            frontendApi: 'accounts.cdgamez.xyz',
-            domain: 'accounts.cdgamez.xyz'
-        });
+        await Clerk.load();
 
         const signInButton = document.getElementById('sign-in-button');
         const userButtonContainer = document.getElementById('userDiv');
+        const signedIn = "false";
 
         if (Clerk.user) {
             // User is logged in
@@ -115,11 +112,9 @@
             userButtonContainer.style.display = 'block'; // Ensure container is visible
             Clerk.mountUserButton(userButtonContainer); // Mount user button into its container
             const userId = user.id;
-            const fullName = user.fullName;
+            signedIn = "true";
             const firstName = user.firstName;
-            const lastName = user.lastName;
             const email = user.primaryEmailAddress.emailAddress;
-            const profileImage = user.imageUrl;
 
             const userProfileDiv = document.getElementById('userDiv');
             userProfileDiv.innerHTML += '<p>${firstName}</p>';
@@ -127,7 +122,7 @@
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button
             userButtonContainer.style.display = 'none'; // Hide the user button container
-            
+            signedIn = "false";
             // Attach event listener to the pre-existing sign-in button
             signInButton.addEventListener('click', () => {
                 Clerk.openSignIn({
@@ -139,6 +134,7 @@
         }
     });
 </script>
+<script src="./gameBits.js" type="module" defer></script>
 </div>
 </body>
 </html>
