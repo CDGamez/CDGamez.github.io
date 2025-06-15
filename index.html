@@ -76,8 +76,8 @@
             <button class="nav-button" aria-label="Sign in" id="sign-in-button">
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
             </button>
-            <button class="nav-button" aria-label="Card">
-                <i class="fa-solid fa-credit-card" onclick="generateCard();"></i>
+            <button class="nav-button" aria-label="Card" id="cardButton">
+                <i class="fa-solid fa-credit-card" onclick="generateCard();" aria-disabled="true"></i>
             </button>
             <button class="nav-button" aria-label="Settings" onclick="openIframe('./settings.html');">
                 <i class="fas fa-cog"></i>
@@ -104,6 +104,10 @@
 
         const signInButton = document.getElementById('sign-in-button');
         const userButtonContainer = document.getElementById('userDiv');
+        const cardButton = document.getElementById("cardButton");
+        function enableCardBtn () {
+            cardButton.ariaDisabled = "false";
+        }
         let signedIn = "false";
 
         if (Clerk.user) {
@@ -119,9 +123,9 @@
             window.firstName = firstName;
             const email = user.primaryEmailAddress.emailAddress;
             window.email = email;
-
+            enableCardBtn();
             const userProfileDiv = document.getElementById('userDiv');
-            userProfileDiv.innerHTML += '<p>${firstName}</p>';
+            userProfileDiv.innerHTML += `<p>${firstName}</p>`;
         } else {
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button
