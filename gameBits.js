@@ -18,8 +18,8 @@
     const analytics = getAnalytics(app);
     const db = getDatabase(app);
     // Declare the price and value left
-    const itemPrice = "0";
-    const valueLeft = "0";
+    let itemPrice = "0";
+    let valueLeft = "0";
 
     function writeGameBit(id, card_number, value, cvv, name) {
       db.ref('gamebits/' + id).set({
@@ -30,7 +30,7 @@
       })
       .then(() => {
         console.log(`Card made!`);
-        const hasCard = "true";
+        let hasCard = "true";
       })
       .catch(err => console.error(`Write failed: ${err}`));
     }
