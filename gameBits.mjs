@@ -20,6 +20,7 @@
     // Declare the price and value left
     let itemPrice = "0";
     let valueLeft = "0";
+    let hasCard = "false";
 
     function writeGameBit(id, card_number, value, cvv, name) {
       db.ref('gamebits/' + id).set({
@@ -30,7 +31,7 @@
       })
       .then(() => {
         console.log(`Card made!`);
-        let hasCard = "true";
+        hasCard = "true";
       })
       .catch(err => console.error(`Write failed: ${err}`));
     }
@@ -54,7 +55,7 @@
     //Start the gamebit library
 
     function generateCard() {
-      if (signedIn === true) {
+      if (signedIn === true && hasCard === false) {
         // Declare Min and Max Values
         const minCard = 1000000000000000;
         const maxCard = 9999999999999999;
@@ -65,7 +66,7 @@
         const cvvNumber = Math.floor(Math.random() * (maxCVV - minCVV + 1)) + minCVV;
         console.log("Card Number and CVV Generated");
         // Make the card
-        writeGameBit(userID, cardNumber, 0, cvvNumber, firstName);
+        writeGameBit(userId, cardNumber, 0, cvvNumber, firstName);
       } else {
         console.log("User not signed in");
       }
@@ -73,14 +74,14 @@
 
     function buyPaid (price) {
       if (signedIn === true && hasCard === true) {
-        readGameBitValue(userID);
+        readGameBitValue(userId);
         if (value < price) {
           console.log("Insufficient funds");
         } else {
           console.log("Processing...");
           itemPrice = price;
           valueLeft = itemPrice - value;
-          updateCardValue(userID, valueLeft);
+          updateCardValue(userId, valueLeft);
           console.log("Item purchased!");
         }
       } else {

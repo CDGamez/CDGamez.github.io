@@ -111,10 +111,14 @@
             signInButton.style.display = 'none'; // Hide the sign-in button
             userButtonContainer.style.display = 'block'; // Ensure container is visible
             Clerk.mountUserButton(userButtonContainer); // Mount user button into its container
+            const user = Clerk.user;
             const userId = user.id;
+            window.userId = userId;
             signedIn = "true";
             const firstName = user.firstName;
+            window.firstName = firstName;
             const email = user.primaryEmailAddress.emailAddress;
+            window.email = email;
 
             const userProfileDiv = document.getElementById('userDiv');
             userProfileDiv.innerHTML += '<p>${firstName}</p>';
@@ -134,7 +138,7 @@
         }
     });
 </script>
-<script src="./gameBits.js" type="module" defer></script>
+<script src="./gameBits.mjs" type="module" crossorigin="anonymous"></script>
 </div>
 </body>
 </html>
