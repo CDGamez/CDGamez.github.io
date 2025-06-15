@@ -114,7 +114,7 @@
             const user = Clerk.user;
             const userId = user.id;
             window.userId = userId;
-            signedIn = "true";
+            window.signedIn = "true";
             const firstName = user.firstName;
             window.firstName = firstName;
             const email = user.primaryEmailAddress.emailAddress;
@@ -126,7 +126,7 @@
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button
             userButtonContainer.style.display = 'none'; // Hide the user button container
-            signedIn = "false";
+            window.signedIn = "false";
             // Attach event listener to the pre-existing sign-in button
             signInButton.addEventListener('click', () => {
                 Clerk.openSignIn({
