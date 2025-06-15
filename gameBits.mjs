@@ -88,3 +88,10 @@
         console.log("User not signed in");
       }
     }
+
+    // Make functions be acessed globally
+    window.writeGameBit = writeGameBit;
+    window.readGameBitValue = readGameBitValue;
+    window.updateCardValue = updateCardValue;
+    window.generateCard = generateCard;
+    window.buyPaid = buyPaid;
