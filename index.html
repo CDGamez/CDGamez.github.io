@@ -104,7 +104,7 @@
 
         const signInButton = document.getElementById('sign-in-button');
         const userButtonContainer = document.getElementById('userDiv');
-        const signedIn = "false";
+        let signedIn = "false";
 
         if (Clerk.user) {
             // User is logged in
