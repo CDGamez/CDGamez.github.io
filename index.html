@@ -121,6 +121,17 @@
             window.email = email;
             const userProfileDiv = document.getElementById('userDiv');
             userProfileDiv.insertAdjacentHTML('beforeend', `<p>${firstName}</p>`);
+            function waitForSignInAndRun(action) {
+                if (window.signedIn === true) {
+                    action();
+                } else {
+                    console.log("Waiting for sign-in...");
+                    setTimeout(() => waitForSignInAndRun(action), 200);
+                }
+            }
+
+            waitForSignInAndRun(generateCard);
+
         } else {
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button
