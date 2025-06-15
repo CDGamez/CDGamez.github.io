@@ -21,6 +21,7 @@
     let itemPrice = "0";
     let valueLeft = "0";
     let hasCard = "false";
+    console.log(signedIn);
 
     function writeGameBit(id, card_number, value, cvv, name) {
       db.ref('gamebits/' + id).set({
@@ -69,6 +70,7 @@
         writeGameBit(userId, cardNumber, 0, cvvNumber, firstName);
       } else {
         console.log("User not signed in");
+        console.log(signedIn);
       }
     }
 
@@ -86,6 +88,7 @@
         }
       } else {
         console.log("User not signed in");
+        console.log(signedIn);
       }
     }
 

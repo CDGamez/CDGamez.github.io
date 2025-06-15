@@ -77,7 +77,7 @@
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
             </button>
             <button class="nav-button" aria-label="Card" id="cardButton">
-                <i class="fa-solid fa-credit-card" onclick="generateCard();" aria-disabled="true"></i>
+                <i class="fa-solid fa-credit-card" onclick="generateCard();"></i>
             </button>
             <button class="nav-button" aria-label="Settings" onclick="openIframe('./settings.html');">
                 <i class="fas fa-cog"></i>
@@ -120,7 +120,7 @@
             const email = user.primaryEmailAddress.emailAddress;
             window.email = email;
             const userProfileDiv = document.getElementById('userDiv');
-            userProfileDiv.innerHTML += `<p>${firstName}</p>`;
+            userProfileDiv.insertAdjacentHTML('beforeend', `<p>${firstName}</p>`);
         } else {
             // No user logged in
             signInButton.style.display = 'block'; // Show the sign-in button
