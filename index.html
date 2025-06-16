@@ -36,6 +36,9 @@
             <div class="user-profile" id="userDiv">
                 <UserButton />
             </div>
+            <div class="user-profile" id="userNameDiv">
+                <!-- This is where the user's name goes -->
+            </div>
             <div class="status-indicators">
                 <span class="text-gray-800 font-bold text-xl" id="current-time"></span>
                 <i class="fas fa-wifi text-gray-600 text-lg"></i>
@@ -104,6 +107,7 @@ window.addEventListener('load', async function () {
 
     const signInButton = document.getElementById('sign-in-button');
     const userButtonContainer = document.getElementById('userDiv');
+    const userNameDiv = document.getElementById('userNameDiv');
 
     function handleUser() {
         const user = Clerk.user;
@@ -116,11 +120,12 @@ window.addEventListener('load', async function () {
             window.firstName = user.firstName;
             window.email = user.primaryEmailAddress.emailAddress;
 
-            userButtonContainer.insertAdjacentHTML('beforeend', `<p>${window.firstName}</p>`);
+            if (!document.getElementById('user-name')) {
+                userNameDiv.insertAdjacentHTML('beforeend', `<p id="user-name">${firstName}</p>`);
+            }
         } else {
             signInButton.style.display = 'block';
             userButtonContainer.style.display = 'none';
-            window.signedIn = false;
         }
     }
 

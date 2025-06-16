@@ -21,8 +21,6 @@
     let itemPrice = "0";
     let valueLeft = "0";
     let hasCard = "false";
-    // Declare clerk usr
-    const signedIN = Clerk.user;
 
     function writeGameBit(id, card_number, value, cvv, name) {
       db.ref('gamebits/' + id).set({
@@ -54,7 +52,13 @@
       .catch(err => console.error(`Update failed: ${err}`));
     }
 
-    //Start the gamebit library
+    window.onload = async function() {
+      //Wait for Clerk to load/sign in
+      await Clerk.load();
+      //Declare Clerk usr vars
+      const user = Clerk.user;
+
+      //Start the gamebit library
 
     function generateCard() {
       if (signedIN === true && hasCard === false) {
@@ -71,7 +75,7 @@
         writeGameBit(userId, cardNumber, 0, cvvNumber, firstName);
       } else {
         console.log("User not signed in");
-        console.log(signedIn);
+        console.log(signedIN);
       }
     }
 
@@ -89,7 +93,7 @@
         }
       } else {
         console.log("User not signed in");
-        console.log(signedIn);
+        console.log(signedIN);
       }
     }
 
@@ -99,3 +103,5 @@
     window.updateCardValue = updateCardValue;
     window.generateCard = generateCard;
     window.buyPaid = buyPaid;
+
+    }
