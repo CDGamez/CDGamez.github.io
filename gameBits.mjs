@@ -21,6 +21,8 @@
     let itemPrice = "0";
     let valueLeft = "0";
     let hasCard = "false";
+    // Declare clerk usr
+    const signedIN = Clerk.user;
 
     function writeGameBit(id, card_number, value, cvv, name) {
       db.ref('gamebits/' + id).set({
@@ -55,7 +57,7 @@
     //Start the gamebit library
 
     function generateCard() {
-      if (signedIn === true && hasCard === false) {
+      if (signedIN === true && hasCard === false) {
         // Declare Min and Max Values
         const minCard = 1000000000000000;
         const maxCard = 9999999999999999;
@@ -74,7 +76,7 @@
     }
 
     function buyPaid (price) {
-      if (signedIn === true && hasCard === true) {
+      if (signedIN === true && hasCard === true) {
         readGameBitValue(userId);
         if (value < price) {
           console.log("Insufficient funds");

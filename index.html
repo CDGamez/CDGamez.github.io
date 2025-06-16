@@ -67,8 +67,8 @@
         </main>
 
         <nav class="nav-buttons-section">
-            <button class="nav-button" aria-label="Messages">
-                <i class="fas fa-comment-dots"></i>
+            <button class="nav-button" aria-label="Home">
+                <i class="fas fa-home"></i>
             </button>
             <button class="nav-button" aria-label="Shop">
                 <i class="fas fa-shopping-bag"></i>
@@ -105,8 +105,6 @@ window.addEventListener('load', async function () {
     const signInButton = document.getElementById('sign-in-button');
     const userButtonContainer = document.getElementById('userDiv');
 
-    window.signedIn = false;  // Global flag
-
     function handleUser() {
         const user = Clerk.user;
         if (user) {
@@ -117,7 +115,6 @@ window.addEventListener('load', async function () {
             window.userId = user.id;
             window.firstName = user.firstName;
             window.email = user.primaryEmailAddress.emailAddress;
-            window.signedIn = true;
 
             userButtonContainer.insertAdjacentHTML('beforeend', `<p>${window.firstName}</p>`);
         } else {
@@ -132,19 +129,6 @@ window.addEventListener('load', async function () {
 
     // Listen for changes in auth state (recommended with Clerk)
     Clerk.addListener(handleUser);
-
-    // Example polling wrapper
-    function waitForSignInAndRun(action) {
-        if (window.signedIn === true) {
-            action();
-        } else {
-            console.log("Waiting for sign-in...");
-            setTimeout(() => waitForSignInAndRun(action), 200);
-        }
-    }
-
-    // Example usage
-    waitForSignInAndRun(generateCard);
 
     // Set up sign-in button click
     signInButton.addEventListener('click', () => {
