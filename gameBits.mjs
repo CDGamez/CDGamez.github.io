@@ -56,7 +56,7 @@
       //Wait for Clerk to load/sign in
       await Clerk.load();
       //Declare Clerk usr vars
-      const user = Clerk.user;
+      const signedIN = Clerk.user;
 
       //Start the gamebit library
 
