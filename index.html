@@ -115,10 +115,16 @@ window.addEventListener('load', async function () {
             signInButton.style.display = 'none';
             userButtonContainer.style.display = 'block';
             Clerk.mountUserButton(userButtonContainer);
-            
-            window.userId = user.id;
-            window.firstName = user.firstName;
-            window.email = user.primaryEmailAddress.emailAddress;
+            //Store user data in sessionStorage
+            sessionStorage.setItem('signedIn', 'true');
+            sessionStorage.setItem('userId', Clerk.user.id);
+            sessionStorage.setItem('firstName', Clerk.user.firstName);
+            sessionStorage.setItem('email', Clerk.user.emailAddress);
+            //Make user data available globally
+            window.signedIn = sessionStorage.getItem('signedIn') === 'true';
+            window.userId = sessionStorage.getItem('userId') || null;
+            window.firstName = sessionStorage.getItem('firstName') || null;
+            window.email = sessionStorage.getItem('email') || null;
 
             if (!document.getElementById('user-name')) {
                 userNameDiv.insertAdjacentHTML('beforeend', `<p id="user-name">${firstName}</p>`);
@@ -126,6 +132,7 @@ window.addEventListener('load', async function () {
         } else {
             signInButton.style.display = 'block';
             userButtonContainer.style.display = 'none';
+            sessionStorage.clear();
         }
     }
 

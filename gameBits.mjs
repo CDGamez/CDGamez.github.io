@@ -21,6 +21,11 @@
     let itemPrice = "0";
     let valueLeft = "0";
     let hasCard = "false";
+    // Declare user variables
+    window.signedIn = sessionStorage.getItem('signedIn') === 'true';
+    window.userId = sessionStorage.getItem('userId') || null;
+    window.firstName = sessionStorage.getItem('firstName') || null;
+    window.email = sessionStorage.getItem('email') || null;
 
     function writeGameBit(id, card_number, value, cvv, name) {
       db.ref('gamebits/' + id).set({
@@ -51,17 +56,10 @@
       .then(() => console.log(`Value updated`))
       .catch(err => console.error(`Update failed: ${err}`));
     }
-
-    window.onload = async function() {
-      //Wait for Clerk to load/sign in
-      await Clerk.load();
-      //Declare Clerk usr vars
-      const signedIN = Clerk.user;
-
-      //Start the gamebit library
+    //Start the gamebit library
 
     function generateCard() {
-      if (signedIN === true && hasCard === false) {
+      if (signedIn === true && hasCard === false) {
         // Declare Min and Max Values
         const minCard = 1000000000000000;
         const maxCard = 9999999999999999;
@@ -74,13 +72,17 @@
         // Make the card
         writeGameBit(userId, cardNumber, 0, cvvNumber, firstName);
       } else {
-        console.log("User not signed in");
-        console.log(signedIN);
+        if (signedIn === true && hasCard === true) {
+          console.log("You already have a card");
+        } else {
+          console.log("User not signed in");
+          console.log(signedIn);
+        }
       }
     }
 
     function buyPaid (price) {
-      if (signedIN === true && hasCard === true) {
+      if (signedIn === true && hasCard === true) {
         readGameBitValue(userId);
         if (value < price) {
           console.log("Insufficient funds");
@@ -93,7 +95,7 @@
         }
       } else {
         console.log("User not signed in");
-        console.log(signedIN);
+        console.log(signedIn);
       }
     }
 
@@ -103,5 +105,3 @@
     window.updateCardValue = updateCardValue;
     window.generateCard = generateCard;
     window.buyPaid = buyPaid;
-
-    }
