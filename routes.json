@@ -1,0 +1,20 @@
+{
+  "/": {
+    "templatePath": "pages/home.html",
+    "title": "Welcome Home | CDGamez",
+    "description": "The official homepage of CDGamez, featuring our latest updates and game collection.",
+    "handler": "console.log('Home page loaded. Welcome!');"
+  },
+
+  "/settings": {
+    "templatePath": "pages/settings.html",
+    "title": "Settings | CDGamez",
+    "description": "Adjust your preferences and customize your experience.",
+    "handler": "console.log('Settings page loaded.');"
+  },
+  "/404": {
+    "templatePath": "pages/404.html",
+    "title": "Page Not Found | CDGamez",
+    "description": "Oops! The page you requested could not be found. Please check the URL or navigate back to the homepage."
+  }
+}
