@@ -1,11 +1,10 @@
 {
   "/": {
     "templatePath": "pages/home.html",
-    "title": "Welcome Home | CDGamez",
+    "title": "Home | CDGamez",
     "description": "The official homepage of CDGamez, featuring our latest updates and game collection.",
     "handler": "console.log('Home page loaded. Welcome!');"
   },
-
   "/settings": {
     "templatePath": "pages/settings.html",
     "title": "Settings | CDGamez",
