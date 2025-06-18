@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Error - Page Not Found!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base styles for the blue screen */
+        body {
+            background-color: #0000AA; /* Classic BSOD blue */
+            color: #FFFFFF; /* White text */
+            font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace; /* Monospace font for old-school look */
+            overflow: hidden; /* Hide scrollbars */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; /* Padding for content */
+            /* New: Overall screen shake effect */
+            animation: screen-shake 0.1s infinite alternate;
+        }
+
+        /* Container for the BSOD content */
+        .bsod-container {
+            width: 90%;
+            max-width: 900px; /* Limit max width for readability */
+            text-align: left;
+            line-height: 1.2; /* Tighter line spacing */
+            padding: 20px;
+            /* Text glitch effect - applying to the main content */
+            animation: text-glitch 0.5s linear infinite alternate; /* Faster, more aggressive glitch */
+            position: relative;
+        }
+
+        /* Heading for the main error message */
+        .error-heading {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Main error description */
+        .error-description {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        /* Technical information and suggestions */
+        .tech-info, .suggestions {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Specific error code line */
+        .error-code {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        /*
+         * Glitch Effects
+         */
+
+        /* Overall screen shake effect */
+        @keyframes screen-shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, 1px); }
+        }
+
+        /* Base flicker/static effect */
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allow interaction with underlying content */
+            z-index: 100;
+            opacity: 0.1; /* Subtle overlay */
+            background: repeating-linear-gradient(
+                #0000AA, /* Main blue */
+                #0000AA 1px,
+                rgba(255, 255, 255, 0.08) 1.5px, /* Slightly more visible white line for static */
+                #0000AA 2px
+            );
+            animation: flicker 0.05s infinite alternate; /* Faster flicker */
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.1; background-position: 0 0; }
+            50% { opacity: 0.2; background-position: 0 2px; }
+            100% { opacity: 0.15; background-position: 0 0; }
+        }
+
+        /* Text glitch effect - applying to the main content */
+        @keyframes text-glitch {
+            0% {
+                transform: translate(0, 0);
+                filter: hue-rotate(0deg);
+                opacity: 1;
+            }
+            10% {
+                transform: translate(-3px, 2px);
+                filter: hue-rotate(15deg);
+                opacity: 0.95;
+            }
+            20% {
+                transform: translate(4px, -1px);
+                filter: hue-rotate(0deg);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(-2px, 3px);
+                filter: hue-rotate(25deg);
+                opacity: 0.9;
+            }
+            40% {
+                transform: translate(1px, -4px);
+                filter: hue-rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-5px, 2px);
+                filter: hue-rotate(35deg);
+                opacity: 0.85;
+            }
+            60% {
+                transform: translate(3px, -3px);
+                filter: hue-rotate(0deg);
+                opacity: 1;
+            }
+            70% {
+                transform: translate(-1px, 4px);
+                filter: hue-rotate(45deg);
+                opacity: 0.92;
+            }
+            80% {
+                transform: translate(2px, -2px);
+                filter: hue-rotate(0deg);
+                opacity: 1;
+            }
+            90% {
+                transform: translate(-4px, 1px);
+                filter: hue-rotate(55deg);
+                opacity: 0.88;
+            }
+            100% {
+                transform: translate(0, 0);
+                filter: hue-rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Scanline effect for CRT display feel */
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 101; /* Above glitch overlay */
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.3) 50%); /* Darker scanlines */
+            background-size: 100% 4px; /* Thin horizontal lines */
+            opacity: 0.4; /* Slightly more visible */
+        }
+    </style>
+</head>
+<body>
+    <!-- Glitch Overlay -->
+    <div class="glitch-overlay"></div>
+    <!-- Scanline Overlay -->
+    <div class="scanline-overlay"></div>
+
+    <div class="bsod-container">
+        <div class="error-heading">
+            404 ERROR - PAGE NOT FOUND
+        </div>
+        <div class="error-description">
+            A critical file system corruption has been detected: The requested resource<br>
+            could not be located at the specified address. This may be caused by a missing file,<br>
+            an invalid URL, or a problem with server integrity.
+        </div>
+        <div class="tech-info">
+            * If you typed the address yourself, verify it for typos and try again.<br>
+            * If you clicked a link, it might be outdated or the resource has been moved.<br>
+            * If this problem persists, please contact the website administrator.
+        </div>
+        <div class="suggestions mt-8">
+            Press any key to reload (or try another URL) _
+        </div>
+        <div class="error-code mt-10">
+            *** STOP: 0x00000404 (0x00000001, 0x00000000, 0x00000000, 0x00000000)
+            <br>RESOURCE_NOT_FOUND_EXCEPTION
+        </div>
+    </div>
+    <script>
+        // Reload the page when any key is pressed
+        document.addEventListener('keydown', function() {
+            window.location.replace("https://cdgamez.xyz");
+        });
+    </script>
+</body>
+</html>

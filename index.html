@@ -9,7 +9,9 @@
         }
     </script>
 
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+
+    <base href="/">
 
     <link rel="manifest" href="./manifest.json">
 
@@ -48,27 +50,12 @@
                 </span>
             </div>
         </header>
-
-        <main class="game-icons-wrapper">
-            <section class="game-icons-scroll-container">
-                <div class="game-icon-placeholder">
-                    <p>Game Title 1</p>
-                </div>
-                <div class="game-icon-placeholder">
-                    <p>Game Title 2</p>
-                </div>
-                <div class="game-icon-placeholder">
-                    <p>Game Title 3</p>
-                </div>
-                <div class="game-icon-placeholder">
-                    <p>Game Title 4</p>
-                </div>
-                <div class="game-icon-placeholder">
-                    <p>Game Title 5</p>
-                </div>
-                </section>
+        <main id="main-content">
+        <!-- Content will be loaded here by router.js -->
+            <div>
+                <p>Initializing website...</p>
+            </div>
         </main>
-
         <nav class="nav-buttons-section">
             <button class="nav-button" aria-label="Home">
                 <i class="fas fa-home"></i>
@@ -149,8 +136,6 @@ window.addEventListener('load', async function () {
 });
 
 </script>
-
-<script src="./gameBits.mjs" type="module" crossorigin="anonymous"></script>
 </div>
 </body>
 </html>

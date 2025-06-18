@@ -14,6 +14,35 @@ body {
     color: #333; /* Default text color for light mode */
 }
 
+/* Blackout Overlay (for power off/on effect) */
+.blackout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: none; /* Hidden by default, script will toggle */
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    flex-direction: column;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+
 /* Console Container - INCREASED MAX-WIDTH for larger PC screens */
 .console-container {
     background-color: #e0e0e0; /* Light gray console body */
@@ -21,7 +50,8 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 1600px; /* Increased from 1200px to allow it to grow significantly larger on big screens */
-    overflow: hidden;
+    height: calc(100vh - 40px); /* Adjust height to fill viewport minus padding */
+    overflow: hidden; /* Ensures content stays within bounds */
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -69,18 +99,51 @@ body {
     color: #666;
 }
 
-/* Game Icons Wrapper and Scroll Container */
+/* Main Content Area */
+#main-content {
+    flex-grow: 1; /* Allows main content to fill available space */
+    background-color: #ffffff; /* White background for main content area */
+    border-radius: 10px; /* Matches other elements */
+    padding: 2rem; /* Consistent padding */
+    overflow-y: auto; /* Enable scrolling for content if it overflows */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+
+    /* Styles for initial loading content/any dynamically loaded content within #main-content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.6rem; /* Make text bigger */
+    font-weight: 500;
+    color: #555; /* Default text color for content */
+}
+
+/* Loading Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Game Icons Wrapper and Scroll Container - These are likely to be content within a loaded page, e.g., home.html */
 .game-icons-wrapper {
-    flex-grow: 1;
+    flex-grow: 1; /* This will make it fill space if used as main content */
     overflow-x: auto;
     padding-bottom: 1rem;
+    display: flex; /* Make it a flex container to arrange items */
+    justify-content: center; /* Center horizontally if items don't fill */
+    align-items: center; /* Center vertically if needed */
 }
 
 .game-icons-scroll-container {
     display: flex;
     gap: 1rem;
     padding: 0.5rem 1rem;
-    justify-content: center;
+    /* justify-content: center; Remove this here, rely on parent .game-icons-wrapper */
     align-items: center;
 }
 
@@ -131,12 +194,12 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    border: 2px solid #ccc;
-    border: none;
+    border: none; /* Already defined as no border */
     padding: 0;
 }
 .nav-button:hover {
     background-color: #f0f0f0;
+    transform: translateY(-2px); /* Added slight lift on hover */
 }
 .nav-button i {
     color: #666;
@@ -169,19 +232,47 @@ body {
 .action-buttons span {
     display: flex;
     align-items: center;
+    background-color: #e2e8f0; /* Subtle background for action buttons */
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
+.action-buttons span:hover {
+    background-color: #cbd5e0;
+}
+
 
 /* Responsive Adjustments (Media Queries) - These will scale down from the new larger base sizes */
 
 /* Adjustments for screens up to 768px wide (e.g., tablets in portrait) */
 @media (max-width: 768px) {
+    .console-container {
+        padding: 15px;
+        border-radius: 0; /* Full coverage on smaller screens */
+        max-width: 100%;
+        height: 100vh; /* Fill full height */
+    }
+    .top-bar, .bottom-bar {
+        padding: 0.75rem 1rem;
+    }
+    #main-content {
+        padding: 1.5rem;
+        font-size: 1.3rem; /* Adjust text size for smaller screens */
+    }
     .game-icons-scroll-container {
-        justify-content: flex-start;
+        justify-content: flex-start; /* Allow scrolling from left */
     }
     .game-icon-placeholder {
         width: 140px; /* Scales down for tablets/smaller desktops */
         height: 210px;
         font-size: 1rem;
+    }
+    .nav-buttons-section {
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        gap: 1rem;
+        padding: 0.75rem;
     }
     .nav-button {
         width: 60px; /* Scales down for tablets/smaller desktops */
@@ -190,18 +281,26 @@ body {
     .nav-button i {
         font-size: 1.5rem;
     }
-    .console-container {
-        padding: 15px;
-    }
 }
 
 /* Adjustments for screens up to 480px wide (e.g., mobile phones) */
 @media (max-width: 480px) {
+    .console-container {
+        padding: 10px;
+    }
+    #main-content {
+        padding: 1rem;
+        font-size: 1.1rem; /* Further adjust text size for mobile */
+    }
     .game-icon-placeholder {
-        width: 120px;
-        height: 180px;
-        font-size: 0.9rem;
-        margin: 0 8px;
+        width: 100px; /* Further scale down for mobile */
+        height: 150px;
+        font-size: 0.8rem;
+        margin: 0 8px; /* Add some horizontal margin if needed */
+    }
+    .nav-buttons-section {
+        gap: 0.8rem;
+        padding: 0.5rem;
     }
     .nav-button {
         width: 50px;
@@ -209,9 +308,6 @@ body {
     }
     .nav-button i {
         font-size: 1.3rem;
-    }
-    .console-container {
-        padding: 10px;
     }
     .top-bar .text-xl {
         font-size: 1.25rem;
