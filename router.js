@@ -1,5 +1,5 @@
 // js/main.js
-import Navigo from "//unpkg.com/navigo";
+import Navigo from "https://unpkg.com/navigo@8.11.1/lib/navigo.js";
 import { routes } from "./routes.js";
 
 const router = new Navigo("/", { hash: true });
