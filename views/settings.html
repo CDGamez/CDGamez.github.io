@@ -1,0 +1,397 @@
+<div id="blackoutOverlay" class="blackout-overlay"></div>
+<div class="console-container">
+    <header class="top-bar">
+        <div class="user-profile" id="userDiv">
+            <UserButton />
+        </div>
+        <div class="user-profile" id="userNameDiv">
+            <!-- This is where the user's name goes -->
+        </div>
+        <div class="status-indicators">
+            <span class="text-gray-800 font-bold text-xl" id="current-time"></span>
+            <i class="fas fa-wifi text-gray-600 text-lg"></i>
+            <span id="battery-status" class="battery-status">
+                <i id="battery-icon" class="fas fa-battery-full"></i>
+                <span id="battery-percentage" class="battery-percentage">100%</span>
+            </span>
+        </div>
+    </header>
+    <div class="switch-console">
+    <div class="switch-screen">
+        <div class="screen-header" id="screenHeader">System Settings</div>
+        <div class="settings-content">
+            <div class="settings-menu">
+                <ul id="settingsMenu">
+                    <li class="selected" data-setting="system">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 9a1 1 0 11-2 0 1 1 0 012 0zm0 2a1 1 0 11-2 0 1 1 0 012 0zm4-2a1 1 0 11-2 0 1 1 0 012 0zm0 2a1 1 0 11-2 0 1 1 0 012 0zm1.72-2.58a1 1 0 00-1.42 0L9 11.05V13h1.95l2.42-2.42a1 1 0 000-1.42z"/></svg>
+                        <span>System</span>
+                    </li>
+                    <li data-setting="display">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM13 7a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2a2 2 0 00-2 2v2zM13 15a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2a2 2 0 00-2 2v2z" /></svg>
+                        <span>Display</span>
+                    </li>
+                    <li data-setting="notifications">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm-4 6a4 4 0 018 0v2.414l.707.707A1 1 0 0016 12H4a1 1 0 00.707-1.707L4 10.414V8z" clip-rule="evenodd"/></svg>
+                        <span>Notifications</span>
+                    </li>
+                    <li data-setting="sleep-mode">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.5-6a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-6 2a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                        <span>Sleep Mode</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="setting-detail" id="settingDetail">
+                <h2 class="text-xl font-semibold mb-4">System Settings</h2>
+                <p>Information about the console system, including firmware version, serial number, and language settings.</p>
+                <div class="mt-4 text-sm text-gray-400">
+                    <p>Version: 18.0.1</p>
+                    <p>Region: North America</p>
+                    <p>Auto-Update Software: On</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="resetConfirmDialog" class="dialog-overlay hidden">
+    <div class="dialog-content">
+        <h3>Confirm Reset</h3>
+        <p>Are you sure you want to reset the console? This will clear all saved data, including local storage and cache. This action cannot be undone.</p>
+        <div class="dialog-actions">
+            <button id="confirmResetBtn" class="confirm-btn">Yes, Reset</button>
+            <button id="cancelResetBtn" class="cancel-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+<div id="globalNotification" class="notification-message hidden"></div>
+<script>
+    // Media query to detect the user's system color scheme preference.
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    /**
+     * Applies the specified theme to the document's <html> element.
+     * Stores the user's preference in localStorage for persistence.
+     * @param {string} theme - The theme to apply: 'light' or 'dark'.
+     */
+    function applyTheme(theme) {
+        const htmlElement = document.documentElement;
+        if (theme === 'dark') {
+            htmlElement.classList.add('dark-mode');
+        } else {
+            htmlElement.classList.remove('dark-mode');
+        }
+        localStorage.setItem('themePreference', theme);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const settingsMenu = document.getElementById('settingsMenu');
+        const settingDetail = document.getElementById('settingDetail');
+        const screenHeader = document.getElementById('screenHeader');
+        const htmlElement = document.documentElement;
+        const resetConfirmDialog = document.getElementById('resetConfirmDialog');
+        const confirmResetBtn = document.getElementById('confirmResetBtn');
+        const cancelResetBtn = document.getElementById('cancelResetBtn');
+        const globalNotification = document.getElementById('globalNotification');
+        let selectedMenuItem = settingsMenu.querySelector('.selected');
+        // --- Initial Theme Application on Load ---
+        const storedTheme = localStorage.getItem('themePreference');
+        if (storedTheme) {
+            applyTheme(storedTheme);
+        } else if (prefersDarkScheme.matches) {
+            applyTheme('dark'); // Apply dark if system prefers it and no local preference
+        } else {
+            applyTheme('light'); // Default to light if no preference and system doesn't prefer dark
+        }
+        // Listen for changes in the user's operating system's color scheme preference.
+        // This ensures the theme updates if the OS setting changes while the app is open
+        // and no explicit user preference has been set (i.e., we're "following system").
+        prefersDarkScheme.addEventListener("change", (event) => {
+            if (!localStorage.getItem('themePreference')) { // Only follow system if no explicit user choice
+                applyTheme(event.matches ? 'dark' : 'light');
+            }
+        });
+        // --- End of Initial Theme Application on Load ---
+        /**
+         * Displays a temporary notification message on the screen.
+         * @param {string} message - The message to display.
+         */
+        function showTemporaryNotification(message) {
+            globalNotification.textContent = message;
+            globalNotification.classList.remove('hidden');
+            // Force reflow to restart animation every time
+            globalNotification.style.animation = 'none';
+            void globalNotification.offsetWidth;
+            globalNotification.style.animation = 'fadeInOut 3s forwards';
+            // Hide after animation (or if JS fails to hide, CSS handles fade out)
+            setTimeout(() => {
+                globalNotification.classList.add('hidden');
+            }, 3000);
+        }
+        /**
+         * Triggers a native browser notification, if allowed.
+         * @param {string} title - The title of the notification.
+         * @param {string} bodyText - The body text of the notification.
+         */
+        function showBrowserNotification(title, bodyText) {
+            if (!("Notification" in window)) {
+                showTemporaryNotification("Browser does not support notifications.");
+                return;
+            }
+            if (Notification.permission === "granted") {
+                new Notification(title, { body: bodyText });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification(title, { body: bodyText });
+                    } else {
+                        showTemporaryNotification("Notification permission denied by user.");
+                    }
+                });
+            } else {
+                showTemporaryNotification("Notification permission was denied. Please allow it in browser settings.");
+            }
+        }
+        // Data for settings content
+        const settingsData = {
+            system: {
+                title: 'System Settings',
+                content: `
+                    <h2 class="text-xl font-semibold mb-4">System Settings</h2>
+                    <p>Information about the console system, including firmware version, serial number, and language settings.</p>
+                    <div class="mt-4 text-sm text-gray-400">
+                        <p>Version: 18.0.1</p>
+                        <p>Region: North America</p>
+                        <p>Auto-Update Software: On</p>
+                        <p>Console Nickname: My Switch</p>
+                    </div>
+                    <button id="resetConsoleButton" class="mt-6">Reset Console</button>
+                `
+            },
+            display: {
+                title: 'Display Settings',
+                content: `
+                    <h2 class="text-xl font-semibold mb-4">Display Settings</h2>
+                    <p>Adjust brightness and switch between light and dark mode.</p>
+                    <div class="mt-4 flex items-center justify-between text-sm text-gray-400">
+                        <span>Dark Mode</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" id="themeToggle" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                `
+            },
+            notifications: {
+                title: 'Notification Settings',
+                content: `
+                    <h2 class="text-xl font-semibold mb-4">Notification Settings</h2>
+                    <p>Manage pop-up notifications for news, eShop, and system updates.</p>
+                    <div class="mt-4 text-sm text-gray-400">
+                        <p>News Notifications: On</p>
+                        <p>eShop Notifications: On</p>
+                        <p>Low Battery Notification: Off</p>
+                    </div>
+                    <button id="configureNotificationsButton" class="mt-6" onclick="requestNotificationPermission();">Configure Notifications</button>
+                    <button id="sendTestNotificationButton" class="mt-6 ml-4">Send Test Notification</button>
+                `
+            },
+            'sleep-mode': {
+                title: 'Sleep Mode',
+                content: `
+                    <h2 class="text-xl font-semibold mb-4">Sleep Mode Settings</h2>
+                    <div class="mt-4 text-sm text-gray-400">
+                        <label for="autoSleepPlaying" class="block mb-2">Auto-sleep (playing):</label>
+                        <select id="autoSleepPlaying" class="mb-4">
+                            <option value="15min">15 minutes</option>
+                            <option value="30min">30 minutes</option>
+                            <option value="1hour">1 hour</option>
+                            <option value="never">Never</option>
+                        </select>
+                        <label for="autoSleepDocked" class="block mb-2">Auto-sleep (docked):</label>
+                        <select id="autoSleepDocked" class="mb-4">
+                            <option value="1hour">1 hour</option>
+                            <option value="3hour">3 hours</option>
+                            <option value="6hour">6 hours</option>
+                            <option value="never">Never</option>
+                        </select>
+                        <div class="flex items-center justify-between mb-4">
+                            <span>Screen Dimming:</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" id="screenDimmingToggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <button id="adjustSleepSettingsButton" class="mt-6">Apply Sleep Settings</button>
+                `
+            }
+        };
+        /**
+         * Updates the detail panel content and screen header based on the selected setting.
+         * Attaches event listeners for dynamic elements within the loaded content.
+         * @param {string} settingId - The ID of the setting to display.
+         */
+        function updateDetail(settingId) {
+            const data = settingsData[settingId];
+            if (data) {
+                settingDetail.innerHTML = data.content;
+                screenHeader.textContent = data.title;
+                // Send a message to the parent window indicating the selected setting.
+                window.parent.postMessage({ type: 'settingSelected', settingId: settingId }, '*');
+                // Attach event listeners for dynamic content
+                switch (settingId) {
+                    case 'system':
+                        const resetConsoleButton = document.getElementById('resetConsoleButton');
+                        if (resetConsoleButton) {
+                            resetConsoleButton.onclick = () => {
+                                resetConfirmDialog.classList.remove('hidden');
+                            };
+                        }
+                        break;
+                    case 'display':
+                        const themeToggle = document.getElementById('themeToggle');
+                        if (themeToggle) {
+                            // Set toggle state based on current theme
+                            themeToggle.checked = htmlElement.classList.contains('dark-mode');
+                            themeToggle.onchange = () => {
+                                const newTheme = themeToggle.checked ? 'dark' : 'light';
+                                applyTheme(newTheme);
+                                showTemporaryNotification(`Switched to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'}`);
+                                // Send dark mode setting to parent window
+                                window.parent.postMessage({ type: 'themeChanged', theme: newTheme }, '*');
+                            };
+                        }
+                        break;
+                    case 'notifications':
+                        const sendTestNotificationButton = document.getElementById('sendTestNotificationButton');
+                        if (sendTestNotificationButton) {
+                            sendTestNotificationButton.onclick = () => {
+                                showBrowserNotification("Switch Notification", "This is a test notification from your console!");
+                            };
+                        }
+                        break;
+                    case 'sleep-mode':
+                        const autoSleepPlayingSelect = document.getElementById('autoSleepPlaying');
+                        const autoSleepDockedSelect = document.getElementById('autoSleepDocked');
+                        const screenDimmingToggle = document.getElementById('screenDimmingToggle');
+                        const adjustSleepSettingsButton = document.getElementById('adjustSleepSettingsButton');
+                        // Load saved sleep mode settings, or use defaults
+                        const savedSleepMode = JSON.parse(localStorage.getItem('sleepModeSettings')) || {
+                            autoPlaying: '15min',
+                            autoDocked: '1hour',
+                            screenDimming: true
+                        };
+                        // Apply saved settings to the UI
+                        if (autoSleepPlayingSelect) autoSleepPlayingSelect.value = savedSleepMode.autoPlaying;
+                        if (autoSleepDockedSelect) autoSleepDockedSelect.value = savedSleepMode.autoDocked;
+                        if (screenDimmingToggle) screenDimmingToggle.checked = savedSleepMode.screenDimming;
+                        // Event listeners to save changes to localStorage and provide feedback
+                        if (autoSleepPlayingSelect) {
+                            autoSleepPlayingSelect.onchange = () => {
+                                savedSleepMode.autoPlaying = autoSleepPlayingSelect.value;
+                                localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
+                                showTemporaryNotification(`Auto-sleep (playing) set to ${autoSleepPlayingSelect.options[autoSleepPlayingSelect.selectedIndex].text}`);
+                            };
+                        }
+                        if (autoSleepDockedSelect) {
+                            autoSleepDockedSelect.onchange = () => {
+                                savedSleepMode.autoDocked = autoSleepDockedSelect.value;
+                                localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
+                                showTemporaryNotification(`Auto-sleep (docked) set to ${autoSleepDockedSelect.options[autoSleepDockedSelect.selectedIndex].text}`);
+                            };
+                        }
+                        if (screenDimmingToggle) {
+                            screenDimmingToggle.onchange = () => {
+                                savedSleepMode.screenDimming = screenDimmingToggle.checked;
+                                localStorage.setItem('sleepModeSettings', JSON.stringify(savedSleepMode));
+                                const status = screenDimmingToggle.checked ? 'On' : 'Off';
+                                showTemporaryNotification(`Screen Dimming set to ${status}`);
+                            };
+                        }
+                        if (adjustSleepSettingsButton) {
+                            adjustSleepSettingsButton.onclick = () => {
+                                showTemporaryNotification("Sleep settings applied!");
+                            };
+                        }
+                        break;
+                    default:
+                        // Attach generic click handler for any other buttons that might exist
+                        const buttons = settingDetail.querySelectorAll('button');
+                        buttons.forEach(button => {
+                            button.onclick = () => {
+                                showTemporaryNotification(`${button.textContent} action performed!`);
+                            };
+                        });
+                        break;
+                }
+            } else {
+                settingDetail.innerHTML = `<h2 class="text-xl font-semibold mb-4">Not Found</h2><p>Content for this setting is not available.</p>`;
+                screenHeader.textContent = 'Settings';
+            }
+        }
+        // Event listener for menu item clicks
+        settingsMenu.addEventListener('click', (event) => {
+            const targetLi = event.target.closest('li');
+            if (targetLi && targetLi.dataset.setting) { // Ensure a list item with a data-setting was clicked
+                if (selectedMenuItem) {
+                    selectedMenuItem.classList.remove('selected');
+                }
+                targetLi.classList.add('selected');
+                selectedMenuItem = targetLi;
+                const settingId = targetLi.dataset.setting;
+                updateDetail(settingId);
+            }
+        });
+        // Keyboard navigation (Up/Down arrows) for menu
+        document.addEventListener('keydown', (event) => {
+            const menuItems = Array.from(settingsMenu.querySelectorAll('li[data-setting]')); // Only select valid menu items
+            let currentIndex = menuItems.indexOf(selectedMenuItem);
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (currentIndex < menuItems.length - 1) {
+                    menuItems[currentIndex].classList.remove('selected');
+                    currentIndex++;
+                    menuItems[currentIndex].classList.add('selected');
+                    selectedMenuItem = menuItems[currentIndex];
+                    updateDetail(selectedMenuItem.dataset.setting);
+                    selectedMenuItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (currentIndex > 0) {
+                    menuItems[currentIndex].classList.remove('selected');
+                    currentIndex--;
+                    menuItems[currentIndex].classList.add('selected');
+                    selectedMenuItem = menuItems[currentIndex];
+                    updateDetail(selectedMenuItem.dataset.setting);
+                    selectedMenuItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
+        });
+        // Reset Console Dialog functionality
+        if (confirmResetBtn) {
+            confirmResetBtn.onclick = () => {
+                localStorage.clear(); // Clear all localStorage data
+                sessionStorage.clear(); // Clear all sessionStorage data
+                console.log('Local Storage and Session Storage cleared.');
+                // Re-apply default theme (dark) and send message to parent
+                applyTheme('dark');
+                window.parent.postMessage({ type: 'themeChanged', theme: 'dark' }, '*'); // Inform parent about theme reset
+                // Reset sleep mode settings to default after clear
+                localStorage.setItem('sleepModeSettings', JSON.stringify({
+                    autoPlaying: '15min',
+                    autoDocked: '1hour',
+                    screenDimming: true
+                }));
+                showTemporaryNotification("Console has been reset and data cleared!");
+                resetConfirmDialog.classList.add('hidden');
+                // Re-initialize the current setting detail to reflect cleared data or default states
+                updateDetail(selectedMenuItem.dataset.setting);
+            };
+        }
+        if (cancelResetBtn) {
+            cancelResetBtn.onclick = () => {
+                resetConfirmDialog.classList.add('hidden');
+            };
+        }
+        // Initialize the app with the first setting displayed
+        updateDetail(selectedMenuItem.dataset.setting);
+    });
+</script>
